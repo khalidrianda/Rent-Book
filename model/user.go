@@ -1,6 +1,10 @@
 package model
 
-import "fmt"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	id_user        string
@@ -11,10 +15,13 @@ type User struct {
 	foto_profil    string
 	status_boolean bool
 }
+type UserModel struct {
+	DB *gorm.DB
+}
 
 func (um UserModel) GetAll() ([]User, error) {
 	var res []User
-	err := um.DB.Table("user").Select("id_user", "nama_user", "email", "password", "alamat", "foto_profil", "status_boolean").Model(&User{}).Find(&res).Error
+	err := um.DB.Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
@@ -22,21 +29,20 @@ func (um UserModel) GetAll() ([]User, error) {
 	return res, nil
 }
 
-func (um UserModel) Insert(newData User) (User, error) {
-	newData.id_user = "usr001"
-
-	res, err := um.DB.Exec("INSERT INTO User (id_user, Nama_user, email, password, alamat, foto_profil, status_boolean) values (?,?,?,?,?,?,?) ",
-		newData.id_user, newData.nama_user, newData.email, newData.password, newData.alamat, newData.foto_profil, newData.status_boolean)
-
+func (mm UserModel) Insert(newData User) (User, error) {
+	err := mm.DB.Create(&newData).Error
 	if err != nil {
-		fmt.Println(err.Error())
-		return User{}, err
-	}
-	affectted, err := res.RowsAffected()
-
-	if affectted < 1 {
+		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
 	return newData, nil
+}
 
+func (um UserModel) Update(newData User) (User, error) {
+	err := um.DB.Save(&newData).Error
+	if err != nil {
+		fmt.Println("error on insert", err.Error())
+		return User{}, err
+	}
+	return newData, nil
 }

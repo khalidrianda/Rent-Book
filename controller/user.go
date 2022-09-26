@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"rent-book/model"
+	"Rent-Book/model"
 )
 
 type UserControll struct {
