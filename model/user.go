@@ -2,18 +2,20 @@ package model
 
 import (
 	"fmt"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 type User struct {
-	Id_user        int
-	Nama_user      string
-	Email          string
-	Password       string
-	Alamat         string
-	Foto_profil    string
-	Status_boolean bool
+	Id_user        int       `gorm:"column:id_user;primaryKey;autoIncerment"`
+	Nama_user      string    `gorm:"column:nama_user"`
+	Email          string    `gorm:"column:email"`
+	Password       string    `gorm:"column:password"`
+	Alamat         string    `gorm:"column:alamat"`
+	Foto_profil    string    `gorm:"column:foto_profil"`
+	Status_boolean bool      `gorm:"column:status"`
+	Updated_at     time.Time `gorm:"column:updated_at"`
 }
 
 type UserModel struct {

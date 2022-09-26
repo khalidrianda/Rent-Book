@@ -8,12 +8,12 @@ import (
 )
 
 type LendBook struct {
-	Id_peminjaman int
-	Id_peminjam   int
-	Id_buku       int
-	Nama_buku     string
-	Batas_waktu   time.Time
-	Return_at     time.Time
+	Id_peminjaman int       `gorm:"column:id_peminjaman;primaryKey;autoIncrement"`
+	Id_peminjam   int       `gorm:"column:id_peminjam"`
+	Id_buku       int       `gorm:"column:id_buku"`
+	Nama_buku     string    `gorm:"column:nama_buku"`
+	Batas_waktu   time.Time `gorm:"column:batas_waktu"`
+	Return_at     time.Time `gorm:"column:return_at"`
 }
 
 type LendBookModel struct {
