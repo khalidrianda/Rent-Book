@@ -16,7 +16,7 @@ func (uc UserControll) GetAll() ([]model.User, error) {
 	return res, nil
 }
 
-func (uc UserControll) add(data model.User) (model.User, error) {
+func (uc UserControll) Add(data model.User) (model.User, error) {
 	res, err := uc.Model.Insert(data)
 
 	if err != nil {

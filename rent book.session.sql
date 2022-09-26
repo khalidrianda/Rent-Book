@@ -1,14 +1,14 @@
 create database rent-book;
 use rent-book;
 
-DROP TABLE user;
-DROP TABLE buku;
+DROP TABLE users;
+DROP TABLE bukus;
 DROP TABLE lend_book;
 
 CREATE TABLE user(
     id_user int NOT NULL auto_increment primary key,
     nama_user varchar(50) NOT NULL,
-    email varchar(50) NOT NULL,
+    email varchar(50) NOT NULL unique,
     password varchar(50) NOT NULL,
     alamat varchar(50) NOT NULL,
     foto_profil varchar(50) NOT NULL,

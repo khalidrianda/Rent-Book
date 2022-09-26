@@ -7,7 +7,9 @@ import (
 )
 
 type Buku struct {
-	Id_buku     int    `gorm:"column:id_buku"`
+	Id_buku int `gorm:"column:id_buku"`
+	Id_user int `gorm:"column:id_user"`
+	// User        User   `gorm:"references:Id_user"`
 	Code_buku   string `gorm:"column:code_buku"`
 	Nama_buku   string `gorm:"column:nama_buku"`
 	Pengarang   string `gorm:"column:pengarang"`

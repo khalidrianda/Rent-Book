@@ -13,7 +13,7 @@ import (
 )
 
 func connectGorm() (*gorm.DB, error) {
-	dsn := "root:@tcp(localhost:3306)/nasi_kotak?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:@tcp(localhost:3306)/rent-book?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
@@ -30,11 +30,13 @@ func clearBoard() {
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&model.Buku{})
 	db.AutoMigrate(&model.User{}) // add migrate user
+	db.AutoMigrate(&model.LendBook{})
 }
 
 func main() {
 	var isRun bool = true
 	var inputMenu, input int
+	// var session int
 
 	Conn, err := connectGorm()
 	if err != nil {
@@ -65,24 +67,35 @@ func main() {
 
 			switch input {
 			case 1: // add login
-				var logIn controller.User
+				var logIn model.User
 				fmt.Println("Email :")
 				fmt.Scanln(&logIn.Email)
 				fmt.Println("Password: ")
-				fmt.Scanln(&logIn.password)
+				fmt.Scanln(&logIn.Password)
 
 				res, err := UserCtl.GetAll()
-
-				fmt.Println("Ya")
+				if err != nil {
+					fmt.Println("Username/Password Salah", err.Error())
+				}
+				// }else{
+				// 	session =
+				// }
+				fmt.Println(res)
 			case 2: // add register
 				var newUser model.User
 				fmt.Println("Register Account User")
-				fmt.Println("Masukan Email")
-				fmt.Scanln(&newUser.email)
-				fmt.Println("Password :")
-				fmt.Scanln(&newUser.password)
+				fmt.Print("Masukan Nama")
+				fmt.Scanln(&newUser.Nama_user)
+				fmt.Print("Masukan Email")
+				fmt.Scanln(&newUser.Email)
+				fmt.Print("Password :")
+				fmt.Scanln(&newUser.Password)
+				fmt.Print("Masukan Alamat")
+				fmt.Scanln(&newUser.Alamat)
+				fmt.Print("Masukan Foto Profil")
+				fmt.Scanln(&newUser.Foto_profil)
 
-				res, err := newUser.Add(newUser)
+				res, err := UserCtl.Add(newUser)
 				if err != nil {
 					fmt.Println("some error on register", err.Error())
 				}
@@ -94,8 +107,7 @@ func main() {
 
 		case 3:
 			// add list buku
-			var book model.Buku
-			res, err := book.GetAll()
+			res, err := bukuCtl.GetAll()
 			if err != nil {
 				fmt.Println("Some error on get", err.Error())
 
