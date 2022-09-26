@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -21,6 +20,9 @@ type User struct {
 type UserModel struct {
 	DB *gorm.DB
 }
+type UserModel struct {
+	DB *gorm.DB
+}
 
 func (um UserModel) GetAll() ([]User, error) {
 	var res []User
@@ -32,11 +34,21 @@ func (um UserModel) GetAll() ([]User, error) {
 	return res, nil
 }
 
-func (um UserModel) Insert(newData User) (User, error) {
-	err := um.DB.Create(&newData).Error
 
+func (mm UserModel) Insert(newData User) (User, error) {
+	err := mm.DB.Create(&newData).Error
 	if err != nil {
-		fmt.Println(err.Error())
+		fmt.Println("error on insert", err.Error())
+		return User{}, err
+	}
+
+	return newData, nil
+}
+
+func (um UserModel) Update(newData User) (User, error) {
+	err := um.DB.Save(&newData).Error
+	if err != nil {
+		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
 

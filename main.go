@@ -29,7 +29,7 @@ func clearBoard() {
 
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&model.Buku{})
-	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.User{}) // add migrate user
 }
 
 func main() {
@@ -43,6 +43,8 @@ func main() {
 	migrate(Conn)
 	bukuMdl := model.BukuModel{Conn}
 	bukuCtl := controller.BukuControll{bukuMdl}
+	userMdl := model.UserModel{Conn}
+	UserCtl := controller.UserControll{userMdl}
 
 	for isRun {
 		fmt.Println("1. Login User")
@@ -62,16 +64,43 @@ func main() {
 			fmt.Scanln(&input)
 
 			switch input {
-			case 1:
-				fmt.Println("Ya")
-			case 2:
+			case 1: // add login
+				var logIn controller.User
+				fmt.Println("Email :")
+				fmt.Scanln(&logIn.Email)
+				fmt.Println("Password: ")
+				fmt.Scanln(&logIn.password)
 
+				res, err := UserCtl.GetAll()
+
+				fmt.Println("Ya")
+			case 2: // add register
+				var newUser model.User
+				fmt.Println("Register Account User")
+				fmt.Println("Masukan Email")
+				fmt.Scanln(&newUser.email)
+				fmt.Println("Password :")
+				fmt.Scanln(&newUser.password)
+
+				res, err := newUser.Add(newUser)
+				if err != nil {
+					fmt.Println("some error on register", err.Error())
+				}
+				fmt.Println("Berhasil Registrasi", res)
 			case 3:
 				break
 			}
 		case 2:
 
 		case 3:
+			// add list buku
+			var book model.Buku
+			res, err := book.GetAll()
+			if err != nil {
+				fmt.Println("Some error on get", err.Error())
+
+			}
+			fmt.Println(res)
 
 		case 4:
 
