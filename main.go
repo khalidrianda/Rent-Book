@@ -3,6 +3,7 @@ package main
 import (
 	"Rent-Book/controller"
 	"Rent-Book/model"
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -85,13 +86,17 @@ func main() {
 				var newUser model.User
 				fmt.Println("Register Account User")
 				fmt.Print("Masukan Nama")
-				fmt.Scanln(&newUser.Nama_user)
+				scanner := bufio.NewScanner(os.Stdin)
+				scanner.Scan()
+				newUser.Nama_user = scanner.Text()
 				fmt.Print("Masukan Email")
 				fmt.Scanln(&newUser.Email)
 				fmt.Print("Password :")
 				fmt.Scanln(&newUser.Password)
 				fmt.Print("Masukan Alamat")
-				fmt.Scanln(&newUser.Alamat)
+				scanner = bufio.NewScanner(os.Stdin)
+				scanner.Scan()
+				newUser.Alamat = scanner.Text()
 				fmt.Print("Masukan Foto Profil")
 				fmt.Scanln(&newUser.Foto_profil)
 
