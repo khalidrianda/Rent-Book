@@ -1,7 +1,9 @@
 create database rent-book;
 use rent-book;
 
-DROP TABLE lend_book
+DROP TABLE user;
+DROP TABLE buku;
+DROP TABLE lend_book;
 
 CREATE TABLE user(
     id_user int NOT NULL auto_increment primary key,
