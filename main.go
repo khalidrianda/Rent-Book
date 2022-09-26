@@ -29,6 +29,7 @@ func clearBoard() {
 
 func migrate(db *gorm.DB) {
 	db.AutoMigrate(&model.Buku{})
+	db.AutoMigrate(&model.User{})
 }
 
 func main() {
