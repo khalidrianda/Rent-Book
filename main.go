@@ -1,6 +1,8 @@
 package main
 
 import (
+	"Rent-Book/controller"
+	"Rent-Book/model"
 	"fmt"
 	"os"
 	"os/exec"
@@ -26,7 +28,7 @@ func clearBoard() {
 }
 
 func migrate(db *gorm.DB) {
-
+	db.AutoMigrate(&model.Buku{})
 }
 
 func main() {
@@ -38,6 +40,8 @@ func main() {
 		fmt.Println("Cant connect to Database", err.Error())
 	}
 	migrate(Conn)
+	bukuMdl := model.BukuModel{Conn}
+	bukuCtl := controller.BukuControll{bukuMdl}
 
 	for isRun {
 		fmt.Println("1. Login User")
