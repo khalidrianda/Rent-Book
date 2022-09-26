@@ -2,18 +2,23 @@ package model
 
 import (
 	"fmt"
-
+	"time"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	id_user        string
-	nama_user      string
-	email          string
-	password       string
-	alamat         string
-	foto_profil    string
-	status_boolean bool
+	Id_user        int       `gorm:"column:id_user;primaryKey;autoIncerment"`
+	Nama_user      string    `gorm:"column:nama_user"`
+	Email          string    `gorm:"column:email"`
+	Password       string    `gorm:"column:password"`
+	Alamat         string    `gorm:"column:alamat"`
+	Foto_profil    string    `gorm:"column:foto_profil"`
+	Status_boolean bool      `gorm:"column:status"`
+	Updated_at     time.Time `gorm:"column:updated_at"`
+}
+
+type UserModel struct {
+	DB *gorm.DB
 }
 type UserModel struct {
 	DB *gorm.DB
@@ -29,12 +34,14 @@ func (um UserModel) GetAll() ([]User, error) {
 	return res, nil
 }
 
+
 func (mm UserModel) Insert(newData User) (User, error) {
 	err := mm.DB.Create(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
+
 	return newData, nil
 }
 
@@ -44,5 +51,6 @@ func (um UserModel) Update(newData User) (User, error) {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
+
 	return newData, nil
 }

@@ -7,13 +7,13 @@ import (
 )
 
 type Buku struct {
-	Id_buku     int
-	code_buku   string
-	nama_buku   string
-	pengarang   string
-	gambar_buku string
-	deskripsi   string
-	is_lend     bool
+	Id_buku     int    `gorm:"column:id_buku"`
+	Code_buku   string `gorm:"column:code_buku"`
+	Nama_buku   string `gorm:"column:nama_buku"`
+	Pengarang   string `gorm:"column:pengarang"`
+	Gambar_buku string `gorm:"column:gambar_buku"`
+	Deskripsi   string `gorm:"column:deskripsi"`
+	Is_lend     bool   `gorm:"column:is_lend"`
 }
 
 type BukuModel struct {
