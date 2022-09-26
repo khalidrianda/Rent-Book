@@ -30,6 +30,9 @@ func (um UserModel) GetAll(newData User) ([]User, error) {
 		fmt.Println("error on query", err.Error())
 		return nil, err
 	}
+	if res == nil {
+		return nil, nil
+	}
 	return res, nil
 }
 

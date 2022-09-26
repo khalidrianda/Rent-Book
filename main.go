@@ -76,11 +76,12 @@ func main() {
 
 				res, err := UserCtl.GetAll(logIn)
 				if err != nil {
-					fmt.Println("Username/Password Salah", err.Error())
+					fmt.Println("Username/Password Salah", err)
 				}
-				ses := res[logIn.Id_user]
-				session := ses.Email
+
+				session := res[logIn.Id_user].Id_user
 				fmt.Println(session)
+
 			case 2: // add register
 				var newUser model.User
 				fmt.Println("Register Account User")
@@ -119,7 +120,36 @@ func main() {
 			fmt.Println(res)
 
 		case 4:
+			fmt.Println("Menu Buku Milikku")
+			fmt.Println("1. Lihat Buku milikku")
+			fmt.Println("2. Tambah Buku Milikku")
+			fmt.Println("3. Kembali")
+			fmt.Print("Masukkan Input : ")
+			fmt.Scanln(&input)
+			switch input {
+			case 1:
 
+			case 2:
+				var newBuku model.Buku
+				fmt.Print("Masukan Nama : ")
+				scanner := bufio.NewScanner(os.Stdin)
+				scanner.Scan()
+				newBuku.Nama_buku = scanner.Text()
+				// fmt.Print("Masukan Email : ")
+				// fmt.Scanln(&newUser.Email)
+				// fmt.Print("Password : ")
+				// fmt.Scanln(&newUser.Password)
+			case 3:
+				break
+			}
+			fmt.Print("Masukan Nama : ")
+			scanner := bufio.NewScanner(os.Stdin)
+			scanner.Scan()
+			newUser.Nama_user = scanner.Text()
+			fmt.Print("Masukan Email : ")
+			fmt.Scanln(&newUser.Email)
+			fmt.Print("Password : ")
+			fmt.Scanln(&newUser.Password)
 		case 5:
 
 		case 6:
