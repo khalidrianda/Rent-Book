@@ -37,7 +37,7 @@ func migrate(db *gorm.DB) {
 func main() {
 	var isRun bool = true
 	var inputMenu, input int
-	// var session int
+	// var session model.User
 
 	Conn, err := connectGorm()
 	if err != nil {
@@ -69,35 +69,34 @@ func main() {
 			switch input {
 			case 1: // add login
 				var logIn model.User
-				fmt.Println("Email :")
+				fmt.Print("Email : ")
 				fmt.Scanln(&logIn.Email)
-				fmt.Println("Password: ")
+				fmt.Print("Password: ")
 				fmt.Scanln(&logIn.Password)
 
-				res, err := UserCtl.GetAll()
+				res, err := UserCtl.GetAll(logIn)
 				if err != nil {
 					fmt.Println("Username/Password Salah", err.Error())
 				}
-				// }else{
-				// 	session =
-				// }
-				fmt.Println(res)
+				ses := res[logIn.Id_user]
+				session := ses.Email
+				fmt.Println(session)
 			case 2: // add register
 				var newUser model.User
 				fmt.Println("Register Account User")
-				fmt.Print("Masukan Nama")
+				fmt.Print("Masukan Nama : ")
 				scanner := bufio.NewScanner(os.Stdin)
 				scanner.Scan()
 				newUser.Nama_user = scanner.Text()
-				fmt.Print("Masukan Email")
+				fmt.Print("Masukan Email : ")
 				fmt.Scanln(&newUser.Email)
-				fmt.Print("Password :")
+				fmt.Print("Password : ")
 				fmt.Scanln(&newUser.Password)
-				fmt.Print("Masukan Alamat")
+				fmt.Print("Masukan Alamat : ")
 				scanner = bufio.NewScanner(os.Stdin)
 				scanner.Scan()
 				newUser.Alamat = scanner.Text()
-				fmt.Print("Masukan Foto Profil")
+				fmt.Print("Masukan Foto Profil : ")
 				fmt.Scanln(&newUser.Foto_profil)
 
 				res, err := UserCtl.Add(newUser)
