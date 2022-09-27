@@ -74,7 +74,7 @@ func main() {
 				fmt.Print("Password: ")
 				fmt.Scanln(&logIn.Password)
 
-				res, err := UserCtl.GetAll(logIn)
+				res, err := UserCtl.GetAll()
 				if err != nil {
 					fmt.Println("Username/Password Salah", err)
 				}
@@ -109,6 +109,26 @@ func main() {
 				break
 			}
 		case 2:
+			// update
+			var N UserModel
+			fmt.Println("pilih id user")
+			fmt.Scanln(&N.id_user)
+			user, err := UserCtl.GetAll(N)
+			fmt.Println("Ganti Nama user")
+			fmt.Scanln(&user.Nama_user)
+			fmt.Println("Ganti Email user")
+			fmt.Scanln(&user.Email)
+			fmt.Println("Ganti Password user")
+			fmt.Scanln(&user.Password)
+			fmt.Println("Ganti Alamat user")
+			fmt.Scanln(&user.Alamat)
+			err = userMdl.Update(&user)
+			if err != nil {
+				fmt.Println("Update failed")
+			} else {
+
+				fmt.Println(user.Insert(model.UserModel))
+			}
 
 		case 3:
 			// add list buku
@@ -142,6 +162,7 @@ func main() {
 			case 3:
 				break
 			}
+			var newUser model.User // newuser model
 			fmt.Print("Masukan Nama : ")
 			scanner := bufio.NewScanner(os.Stdin)
 			scanner.Scan()
