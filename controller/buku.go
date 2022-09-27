@@ -6,8 +6,8 @@ type BukuControll struct {
 	Model model.BukuModel
 }
 
-func (mc BukuControll) GetAll() ([]model.Buku, error) {
-	res, err := mc.Model.GetAll()
+func (mc BukuControll) GetAll(session uint) ([]model.Buku, error) {
+	res, err := mc.Model.GetAll(session)
 	if err != nil {
 		return nil, err
 	}

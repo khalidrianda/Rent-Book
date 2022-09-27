@@ -15,7 +15,7 @@ type User struct {
 	Alamat         string     `gorm:"column:alamat"`
 	Foto_profil    string     `gorm:"column:foto_profil"`
 	Status_boolean bool       `gorm:"column:status;default:false"`
-	Create_at      time.Time  `gorm:"created_at;autoCreateTime"`
+	Create_at      time.Time  `gorm:"column:created_at;autoCreateTime"`
 	Updated_at     time.Time  `gorm:"column:updated_at;autoUpdateTime"`
 	Bukus          []Buku     `gorm:"foreignKey:Id_user"`
 	LendBooks      []LendBook `gorm:"foreignKey:Id_peminjam"`

@@ -119,7 +119,7 @@ func main() {
 
 		case 3:
 			// add list buku
-			res, err := bukuCtl.GetAll()
+			res, err := bukuCtl.GetAll(session)
 			if err != nil {
 				fmt.Println("Some error on get", err.Error())
 

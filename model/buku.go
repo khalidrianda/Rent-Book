@@ -22,9 +22,9 @@ type BukuModel struct {
 	DB *gorm.DB
 }
 
-func (mm BukuModel) GetAll() ([]Buku, error) {
+func (mm BukuModel) GetAll(session uint) ([]Buku, error) {
 	var res []Buku
-	err := mm.DB.Where("is_lend = 0").Find(&res).Error
+	err := mm.DB.Where("is_lend = 0 && id_user != ?", session).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
