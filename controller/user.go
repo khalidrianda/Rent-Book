@@ -8,8 +8,8 @@ type UserControll struct {
 	Model model.UserModel
 }
 
-func (uc UserControll) GetAll(data model.User) ([]model.User, error) {
-	res, err := uc.Model.GetAll(data)
+func (uc UserControll) GetAll() ([]model.User, error) {
+	res, err := uc.Model.GetAll()
 	if err != nil {
 		return nil, err
 	}
@@ -18,7 +18,6 @@ func (uc UserControll) GetAll(data model.User) ([]model.User, error) {
 
 func (uc UserControll) Add(data model.User) (model.User, error) {
 	res, err := uc.Model.Insert(data)
-
 	if err != nil {
 		return model.User{}, err
 	}
