@@ -52,10 +52,30 @@ func (mm BukuModel) Insert(newData Buku) (Buku, error) {
 }
 
 func (mm BukuModel) Update(newData Buku) (Buku, error) {
-	err := mm.DB.Where("id_buku = ?", newData.Id_buku).Save(&newData).Error
+	err := mm.DB.Where("id_buku = ?", newData.Id_buku).Updates(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return Buku{}, err
 	}
 	return newData, nil
+}
+
+func (mm BukuModel) UpdateCode(newData Buku) {
+	mm.DB.Select("code_buku").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
+}
+
+func (mm BukuModel) UpdateNama(newData Buku) {
+	mm.DB.Select("nama_buku").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
+}
+
+func (mm BukuModel) UpdatePengarang(newData Buku) {
+	mm.DB.Select("pengarang").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
+}
+
+func (mm BukuModel) UpdateGambar(newData Buku) {
+	mm.DB.Select("gambar_buku").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
+}
+
+func (mm BukuModel) UpdateDeskripsi(newData Buku) {
+	mm.DB.Select("deskripsi").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
 }
