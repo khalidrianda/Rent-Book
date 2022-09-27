@@ -32,6 +32,16 @@ func (mm BukuModel) GetAll() ([]Buku, error) {
 	return res, nil
 }
 
+func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) {
+	var res []Buku
+	err := mm.DB.Where("id_user = ?", id).Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return nil, err
+	}
+	return res, nil
+}
+
 func (mm BukuModel) Insert(newData Buku) (Buku, error) {
 	err := mm.DB.Create(&newData).Error
 	if err != nil {

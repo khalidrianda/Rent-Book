@@ -133,7 +133,12 @@ func main() {
 			fmt.Scanln(&input)
 			switch input {
 			case 1:
+				res, err := bukuCtl.GetMyBook(session)
+				if err != nil {
+					fmt.Println("Some error on get", err.Error())
 
+				}
+				fmt.Println(res)
 			case 2:
 				if session != 0 {
 					var newBuku model.Buku
