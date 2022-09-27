@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"gorm.io/driver/mysql"
@@ -39,7 +40,7 @@ func main() {
 	var isRun bool = true
 	var inputMenu, input int
 	var session uint
-	// var inputString string
+	var inputString string
 
 	Conn, err := connectGorm()
 	if err != nil {
@@ -50,8 +51,8 @@ func main() {
 	bukuCtl := controller.BukuControll{bukuMdl}
 	userMdl := model.UserModel{Conn}
 	UserCtl := controller.UserControll{userMdl}
-	// lendMdl := model.UserModel{Conn}
-	// lendCtrl := controller.UserControll{lendMdl}
+	lendMdl := model.LendBookModel{Conn}
+	lendCtrl := controller.LendBookControl{lendMdl}
 
 	for isRun {
 		fmt.Println("APLIKASI RENT BOOK")
@@ -70,6 +71,7 @@ func main() {
 			fmt.Println("1. Login User")
 			fmt.Println("2. Register")
 			fmt.Println("3. Kembali")
+			fmt.Print("Masukan input : ")
 			fmt.Scanln(&input)
 
 			switch input {
@@ -86,9 +88,6 @@ func main() {
 				} else {
 					session = res.Id_user
 				}
-
-				// session := res[logIn.Id_user].Id_user
-				// fmt.Println(session)
 
 			case 2: // add register
 				var newUser model.User
@@ -113,14 +112,14 @@ func main() {
 					fmt.Println("some error on register", err.Error())
 				}
 				fmt.Println("Berhasil Registrasi", res)
-			case 3:
+			case 3: //keluar
 				break
 			}
 		case 2:
 
 		case 3:
 			// add list buku
-			res, err := bukuCtl.GetAll()
+			res, err := bukuCtl.GetAll(session)
 			if err != nil {
 				fmt.Println("Some error on get", err.Error())
 
@@ -129,6 +128,28 @@ func main() {
 				fmt.Printf("%v \n", res[i])
 			}
 
+			fmt.Println("Apakah Anda ingin meminjam buku? (Y/N)")
+			fmt.Scanln(&inputString)
+			if session == 0 {
+				fmt.Println("Anda haru login untuk meminjam buku")
+			} else if inputString == "Y" {
+				fmt.Println("Masukkan ID Buku yang ingin dipinjam : ")
+				fmt.Scanln(&input)
+				var pinjamBuku model.LendBook
+				var tempBuku model.Buku
+				pinjamBuku.Id_buku = uint(input)
+				pinjamBuku.Id_peminjam = session
+				temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
+				pinjamBuku.Nama_buku = temp.Nama_buku
+				inOneMonth := time.Now().AddDate(0, 1, 0)
+				pinjamBuku.Batas_waktu = inOneMonth
+				lendCtrl.Add(pinjamBuku)
+				tempBuku.Id_buku = input
+				tempBuku.Is_lend = true
+				bukuCtl.Dipinjam(tempBuku)
+			} else {
+				continue
+			}
 		case 4:
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
@@ -211,7 +232,6 @@ func main() {
 							newBuku.Deskripsi = e
 							bukuCtl.UpdateDeskripsi(newBuku)
 						}
-						fmt.Println(newBuku)
 					}
 				case 3:
 					if session != 0 {
@@ -250,7 +270,6 @@ func main() {
 				fmt.Println("Anda harus login dulu")
 				continue
 			}
-
 		case 6:
 			isRun = false
 			clearBoard()

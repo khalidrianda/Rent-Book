@@ -6,8 +6,8 @@ type BukuControll struct {
 	Model model.BukuModel
 }
 
-func (mc BukuControll) GetAll() ([]model.Buku, error) {
-	res, err := mc.Model.GetAll()
+func (mc BukuControll) GetAll(session uint) ([]model.Buku, error) {
+	res, err := mc.Model.GetAll(session)
 	if err != nil {
 		return nil, err
 	}
@@ -18,6 +18,14 @@ func (mc BukuControll) GetMyBook(id uint) ([]model.Buku, error) {
 	res, err := mc.Model.GetMyBook(id)
 	if err != nil {
 		return nil, err
+	}
+	return res, nil
+}
+
+func (mc BukuControll) GetName(id uint) (model.Buku, error) {
+	res, err := mc.Model.GetName(id)
+	if err != nil {
+		return model.Buku{}, err
 	}
 	return res, nil
 }
@@ -36,6 +44,10 @@ func (gc BukuControll) Update(data model.Buku) (model.Buku, error) {
 		return model.Buku{}, err
 	}
 	return res, nil
+}
+
+func (gc BukuControll) Dipinjam(data model.Buku) {
+	gc.Model.Dipinjam(data)
 }
 
 func (gc BukuControll) UpdateCode(data model.Buku) {
