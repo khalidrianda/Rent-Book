@@ -32,12 +32,13 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&model.Buku{})
 	db.AutoMigrate(&model.User{}) // add migrate user
 	db.AutoMigrate(&model.LendBook{})
+
 }
 
 func main() {
 	var isRun bool = true
 	var inputMenu, input int
-	// var session model.User
+	var session uint
 
 	Conn, err := connectGorm()
 	if err != nil {
@@ -48,6 +49,8 @@ func main() {
 	bukuCtl := controller.BukuControll{bukuMdl}
 	userMdl := model.UserModel{Conn}
 	UserCtl := controller.UserControll{userMdl}
+	// lendMdl := model.UserModel{Conn}
+	// lendCtrl := controller.UserControll{lendMdl}
 
 	for isRun {
 		fmt.Println("1. Login User")
@@ -76,11 +79,13 @@ func main() {
 
 				res, err := UserCtl.GetAll(logIn)
 				if err != nil {
-					fmt.Println("Username/Password Salah", err)
+					fmt.Println("Username/Password Salah", err.Error())
+				} else {
+					session = res.Id_user
 				}
 
-				session := res[logIn.Id_user].Id_user
-				fmt.Println(session)
+				// session := res[logIn.Id_user].Id_user
+				// fmt.Println(session)
 
 			case 2: // add register
 				var newUser model.User
@@ -130,26 +135,35 @@ func main() {
 			case 1:
 
 			case 2:
-				var newBuku model.Buku
-				fmt.Print("Masukan Nama : ")
-				scanner := bufio.NewScanner(os.Stdin)
-				scanner.Scan()
-				newBuku.Nama_buku = scanner.Text()
-				// fmt.Print("Masukan Email : ")
-				// fmt.Scanln(&newUser.Email)
-				// fmt.Print("Password : ")
-				// fmt.Scanln(&newUser.Password)
+				if session != 0 {
+					var newBuku model.Buku
+					newBuku.Id_user = uint(session)
+					fmt.Print("Masukan Kode Buku : ")
+					fmt.Scanln(&newBuku.Code_buku)
+					fmt.Print("Masukan Nama Buku : ")
+					scanner := bufio.NewScanner(os.Stdin)
+					scanner.Scan()
+					newBuku.Nama_buku = scanner.Text()
+					fmt.Print("Masukan Pengarang : ")
+					scanner.Scan()
+					newBuku.Pengarang = scanner.Text()
+					fmt.Print("Masukan Gambar buku : ")
+					fmt.Scanln(&newBuku.Gambar_buku)
+					fmt.Print("Masukan Deskripsi buku : ")
+					scanner.Scan()
+					newBuku.Deskripsi = scanner.Text()
+
+					res, err := bukuCtl.Add(newBuku)
+					if err != nil {
+						fmt.Println("some error on register", err.Error())
+					}
+					fmt.Println("Berhasil Registrasi", res)
+				} else {
+					fmt.Println("Login dulu untuk menambah buku")
+				}
 			case 3:
 				break
 			}
-			fmt.Print("Masukan Nama : ")
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
-			newUser.Nama_user = scanner.Text()
-			fmt.Print("Masukan Email : ")
-			fmt.Scanln(&newUser.Email)
-			fmt.Print("Password : ")
-			fmt.Scanln(&newUser.Password)
 		case 5:
 
 		case 6:

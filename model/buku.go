@@ -7,15 +7,15 @@ import (
 )
 
 type Buku struct {
-	Id_buku int `gorm:"column:id_buku"`
-	Id_user int `gorm:"column:id_user"`
-	// User        User   `gorm:"references:Id_user"`
-	Code_buku   string `gorm:"column:code_buku"`
-	Nama_buku   string `gorm:"column:nama_buku"`
-	Pengarang   string `gorm:"column:pengarang"`
-	Gambar_buku string `gorm:"column:gambar_buku"`
-	Deskripsi   string `gorm:"column:deskripsi"`
-	Is_lend     bool   `gorm:"column:is_lend"`
+	Id_buku     int        `gorm:"column:id_buku;primaryKey;autoIncrement"`
+	Id_user     uint       `gorm:"column:id_user"`
+	Code_buku   string     `gorm:"column:code_buku"`
+	Nama_buku   string     `gorm:"column:nama_buku"`
+	Pengarang   string     `gorm:"column:pengarang"`
+	Gambar_buku string     `gorm:"column:gambar_buku"`
+	Deskripsi   string     `gorm:"column:deskripsi"`
+	Is_lend     bool       `gorm:"column:is_lend"`
+	LendBooks   []LendBook `gorm:"foreignKey:Id_buku"`
 }
 
 type BukuModel struct {

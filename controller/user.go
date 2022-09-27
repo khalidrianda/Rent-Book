@@ -8,10 +8,10 @@ type UserControll struct {
 	Model model.UserModel
 }
 
-func (uc UserControll) GetAll(data model.User) ([]model.User, error) {
+func (uc UserControll) GetAll(data model.User) (model.User, error) {
 	res, err := uc.Model.GetAll(data)
 	if err != nil {
-		return nil, err
+		return model.User{}, err
 	}
 	return res, nil
 }
