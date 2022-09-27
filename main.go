@@ -127,51 +127,83 @@ func main() {
 			}
 
 		case 4:
-			fmt.Println("Menu Buku Milikku")
-			fmt.Println("1. Lihat Buku milikku")
-			fmt.Println("2. Edit Buku milikku")
-			fmt.Println("3. Tambah Buku Milikku")
-			fmt.Println("4. Kembali")
-			fmt.Print("Masukkan Input : ")
-			fmt.Scanln(&input)
-			switch input {
-			case 1:
-				res, err := bukuCtl.GetMyBook(session)
-				if err != nil {
-					fmt.Println("Some error on get", err.Error())
-
-				}
-				fmt.Println(res)
-			case 2:
-			case 3:
-				if session != 0 {
-					var newBuku model.Buku
-					newBuku.Id_user = uint(session)
-					fmt.Print("Masukan Kode Buku : ")
-					fmt.Scanln(&newBuku.Code_buku)
-					fmt.Print("Masukan Nama Buku : ")
-					scanner := bufio.NewScanner(os.Stdin)
-					scanner.Scan()
-					newBuku.Nama_buku = scanner.Text()
-					fmt.Print("Masukan Pengarang : ")
-					scanner.Scan()
-					newBuku.Pengarang = scanner.Text()
-					fmt.Print("Masukan Gambar buku : ")
-					fmt.Scanln(&newBuku.Gambar_buku)
-					fmt.Print("Masukan Deskripsi buku : ")
-					scanner.Scan()
-					newBuku.Deskripsi = scanner.Text()
-
-					res, err := bukuCtl.Add(newBuku)
+			var ulang bool = true
+			var inputBuku int
+			for ulang {
+				fmt.Println("Menu Buku Milikku")
+				fmt.Println("1. Lihat Buku milikku")
+				fmt.Println("2. Tambah Buku Milikku")
+				fmt.Println("3. Kembali")
+				fmt.Print("Masukkan Input : ")
+				fmt.Scanln(&input)
+				switch input {
+				case 1:
+					res, err := bukuCtl.GetMyBook(session)
 					if err != nil {
-						fmt.Println("some error on register", err.Error())
+						fmt.Println("Some error on get", err.Error())
+
 					}
-					fmt.Println("Berhasil Registrasi", res)
-				} else {
-					fmt.Println("Login dulu untuk menambah buku")
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+						fmt.Println("Masukkan code buku yang ingin anda ubah :")
+						fmt.Scanln(&inputBuku)
+
+						var newBuku model.Buku
+						newBuku.Id_user = uint(session)
+						fmt.Print("Masukan Kode Buku : ")
+						fmt.Scanln(&newBuku.Code_buku)
+						fmt.Print("Masukan Nama Buku : ")
+						scanner := bufio.NewScanner(os.Stdin)
+						scanner.Scan()
+						newBuku.Nama_buku = scanner.Text()
+						fmt.Print("Masukan Pengarang : ")
+						scanner.Scan()
+						newBuku.Pengarang = scanner.Text()
+						fmt.Print("Masukan Gambar buku : ")
+						fmt.Scanln(&newBuku.Gambar_buku)
+						fmt.Print("Masukan Deskripsi buku : ")
+						scanner.Scan()
+						newBuku.Deskripsi = scanner.Text()
+
+						res, err := bukuCtl.Add(newBuku)
+						if err != nil {
+							fmt.Println("some error on register", err.Error())
+						}
+						fmt.Println("Berhasil Registrasi", res)
+					}
+				case 2:
+					if session != 0 {
+						var newBuku model.Buku
+						newBuku.Id_user = uint(session)
+						fmt.Print("Masukan Kode Buku : ")
+						fmt.Scanln(&newBuku.Code_buku)
+						fmt.Print("Masukan Nama Buku : ")
+						scanner := bufio.NewScanner(os.Stdin)
+						scanner.Scan()
+						newBuku.Nama_buku = scanner.Text()
+						fmt.Print("Masukan Pengarang : ")
+						scanner.Scan()
+						newBuku.Pengarang = scanner.Text()
+						fmt.Print("Masukan Gambar buku : ")
+						fmt.Scanln(&newBuku.Gambar_buku)
+						fmt.Print("Masukan Deskripsi buku : ")
+						scanner.Scan()
+						newBuku.Deskripsi = scanner.Text()
+
+						res, err := bukuCtl.Add(newBuku)
+						if err != nil {
+							fmt.Println("some error on register", err.Error())
+						}
+						fmt.Println("Berhasil Registrasi", res)
+					} else {
+						fmt.Println("Login dulu untuk menambah buku")
+					}
+				case 3:
+					ulang = false
+					clearBoard()
 				}
-			case 4:
-				break
 			}
 		case 5:
 

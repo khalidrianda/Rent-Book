@@ -52,7 +52,7 @@ func (mm BukuModel) Insert(newData Buku) (Buku, error) {
 }
 
 func (mm BukuModel) Update(newData Buku) (Buku, error) {
-	err := mm.DB.Save(&newData).Error
+	err := mm.DB.Where("id_buku = ?", newData.Id_buku).Save(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return Buku{}, err

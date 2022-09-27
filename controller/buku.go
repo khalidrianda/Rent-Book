@@ -15,7 +15,7 @@ func (mc BukuControll) GetAll() ([]model.Buku, error) {
 }
 
 func (mc BukuControll) GetMyBook(id uint) ([]model.Buku, error) {
-	res, err := mc.Model.GetAll()
+	res, err := mc.Model.GetMyBook(id)
 	if err != nil {
 		return nil, err
 	}
@@ -24,6 +24,14 @@ func (mc BukuControll) GetMyBook(id uint) ([]model.Buku, error) {
 
 func (gc BukuControll) Add(data model.Buku) (model.Buku, error) {
 	res, err := gc.Model.Insert(data)
+	if err != nil {
+		return model.Buku{}, err
+	}
+	return res, nil
+}
+
+func (gc BukuControll) Update(data model.Buku) (model.Buku, error) {
+	res, err := gc.Model.Update(data)
 	if err != nil {
 		return model.Buku{}, err
 	}
