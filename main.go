@@ -122,13 +122,16 @@ func main() {
 				fmt.Println("Some error on get", err.Error())
 
 			}
-			fmt.Println(res)
+			for i := 0; i < len(res); i++ {
+				fmt.Printf("%v \n", res[i])
+			}
 
 		case 4:
 			fmt.Println("Menu Buku Milikku")
 			fmt.Println("1. Lihat Buku milikku")
-			fmt.Println("2. Tambah Buku Milikku")
-			fmt.Println("3. Kembali")
+			fmt.Println("2. Edit Buku milikku")
+			fmt.Println("3. Tambah Buku Milikku")
+			fmt.Println("4. Kembali")
 			fmt.Print("Masukkan Input : ")
 			fmt.Scanln(&input)
 			switch input {
@@ -140,6 +143,7 @@ func main() {
 				}
 				fmt.Println(res)
 			case 2:
+			case 3:
 				if session != 0 {
 					var newBuku model.Buku
 					newBuku.Id_user = uint(session)
@@ -166,7 +170,7 @@ func main() {
 				} else {
 					fmt.Println("Login dulu untuk menambah buku")
 				}
-			case 3:
+			case 4:
 				break
 			}
 		case 5:
