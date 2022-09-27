@@ -82,11 +82,11 @@ func main() {
 				fmt.Print("Password: ")
 				fmt.Scanln(&logIn.Password)
 
-				res, err := UserCtl.GetAll(logIn)
+				res, err := UserCtl.GetAll()
 				if err != nil {
 					fmt.Println("Username/Password Salah", err.Error())
 				} else {
-					session = res.Id_user
+					session = res.Id_User
 				}
 
 			case 2: // add register
@@ -106,6 +106,7 @@ func main() {
 				newUser.Alamat = scanner.Text()
 				fmt.Print("Masukan Foto Profil : ")
 				fmt.Scanln(&newUser.Foto_profil)
+				newUser.Status_boolean = true
 
 				res, err := UserCtl.Add(newUser)
 				if err != nil {
@@ -116,6 +117,98 @@ func main() {
 				break
 			}
 		case 2:
+			if session == 0 {
+				fmt.Println("Login Required")
+				continue
+			}
+			var pilih bool = true
+			var plh int
+
+			for pilih {
+				fmt.Println("Update Profil")
+				fmt.Println("1. Update")
+				fmt.Println("2. Non-aktifkan akun")
+				fmt.Println("3. Exit")
+				fmt.Println("Select menu: ")
+				fmt.Scan(&plh)
+				switch plh {
+				case 1:
+					if session == 0 {
+						fmt.Println("Anda harus login dulu")
+						continue
+					}
+					res, err := UserCtl.LogIn(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+					var updUser model.User
+					var n, e, p, a, f string
+					updUser.Id_user = uint(session)
+					// fmt.Println("Masukan Nama Update:")
+					// fmt.Scanln(&n)
+					fmt.Print("Masukan Nama Update : ")
+					scanner := bufio.NewScanner(os.Stdin)
+					scanner.Scan()
+					n = scanner.Text()
+					fmt.Print("Masukan Email Update : ")
+					scanner.Scan()
+					e = scanner.Text()
+					fmt.Print("Masukan Password : ")
+					scanner.Scan()
+					p = scanner.Text()
+					fmt.Print("Masukan Alamat Update : ")
+					scanner.Scan()
+					a = scanner.Text()
+					fmt.Print("Masukan Poto Profil : ")
+					fmt.Scanln(&f)
+
+					if n != "" {
+						updUser.Nama_user = a
+						UserCtl.UpdateNama(updUser)
+					}
+					if e != "" {
+						updUser.Email = e
+						UserCtl.UpdateEmail(updUser)
+					}
+					if p != "" {
+						updUser.Password = p
+						UserCtl.UpdatePassword(updUser)
+					}
+					if a != "" {
+						updUser.Alamat = a
+						UserCtl.UpdateAlamat(updUser)
+					}
+					if f != "" {
+						updUser.Foto_profil = f
+						UserCtl.UpdateFotoProfil(updUser)
+					}
+					fmt.Println(updUser)
+
+				case 2:
+					var stats model.User
+					res, err := UserCtl.LogIn(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+					stats.Status_boolean = false
+
+				case 3:
+					pilih = false
+					clearBoard()
+				}
+			}
 
 		case 3:
 			// add list buku
@@ -265,6 +358,15 @@ func main() {
 					clearBoard()
 				}
 			}
+			var newUser model.User // newuser model
+			fmt.Print("Masukan Nama : ")
+			scanner := bufio.NewScanner(os.Stdin)
+			scanner.Scan()
+			newUser.Nama_user = scanner.Text()
+			fmt.Print("Masukan Email : ")
+			fmt.Scanln(&newUser.Email)
+			fmt.Print("Password : ")
+			fmt.Scanln(&newUser.Password)
 		case 5:
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
