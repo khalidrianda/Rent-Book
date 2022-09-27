@@ -3,7 +3,7 @@ use rent-book;
 
 DROP TABLE users;
 DROP TABLE bukus;
-DROP TABLE lend_book;
+DROP TABLE lend_books;
 
 CREATE TABLE user(
     id_user int NOT NULL auto_increment primary key,

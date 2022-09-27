@@ -8,15 +8,17 @@ import (
 )
 
 type User struct {
-	Id_user        int       `gorm:"column:id_user;primaryKey"`
-	Nama_user      string    `gorm:"column:nama_user"`
-	Email          string    `gorm:"column:email;unique"`
-	Password       string    `gorm:"column:password"`
-	Alamat         string    `gorm:"column:alamat"`
-	Foto_profil    string    `gorm:"column:foto_profil"`
-	Status_boolean bool      `gorm:"column:status;default:false"`
-	Create_at      time.Time `gorm:"created_at;autoCreateTime"`
-	Updated_at     time.Time `gorm:"column:updated_at;autoUpdateTime"`
+	Id_user        uint       `gorm:"column:id_user;primaryKey;autoIncrement"`
+	Nama_user      string     `gorm:"column:nama_user"`
+	Email          string     `gorm:"column:email;unique"`
+	Password       string     `gorm:"column:password"`
+	Alamat         string     `gorm:"column:alamat"`
+	Foto_profil    string     `gorm:"column:foto_profil"`
+	Status_boolean bool       `gorm:"column:status;default:false"`
+	Create_at      time.Time  `gorm:"created_at;autoCreateTime"`
+	Updated_at     time.Time  `gorm:"column:updated_at;autoUpdateTime"`
+	Bukus          []Buku     `gorm:"foreignKey:Id_user"`
+	LendBooks      []LendBook `gorm:"foreignKey:Id_peminjam"`
 }
 
 type UserModel struct {
@@ -26,6 +28,26 @@ type UserModel struct {
 func (um UserModel) GetAll() ([]User, error) {
 	var res []User
 	err := um.DB.Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return nil, err
+	}
+	return res, nil
+}
+
+func (um UserModel) GetUser(id uint) ([]User, error) {
+	var res []User
+	err := um.DB.Where("id_user = ?", id).Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return nil, err
+	}
+	return res, nil
+}
+
+func (um UserModel) LogIn(Id uint) ([]User, error) {
+	var res []User
+	err := um.DB.Where("id_user = ?", Id).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
@@ -43,10 +65,33 @@ func (um UserModel) Insert(newData User) (User, error) {
 }
 
 func (um UserModel) Update(newData User) (User, error) {
-	err := um.DB.Save(&newData).Error
+	err := um.DB.Where("id_nama = ?", newData.Id_user).Updates(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
 	return newData, nil
+}
+
+func (um UserModel) UpdateId(newData User) {
+	um.DB.Select("Id_user").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdateNama(newData User) {
+	um.DB.Select("Nama_user").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdateEmail(newData User) {
+	um.DB.Select("Email").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdatePassword(newData User) {
+	um.DB.Select("Password").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdateAlamat(newData User) {
+	um.DB.Select("Alamat").Where("Id_User = ?", newData.Id_user).Updates(&newData)
+}
+func (um UserModel) UpdateFotoProfil(newData User) {
+	um.DB.Select("Foto_profil").Where("Id_User = ?", newData.Id_user).Updates(&newData)
 }

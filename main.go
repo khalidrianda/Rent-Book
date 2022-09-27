@@ -32,12 +32,14 @@ func migrate(db *gorm.DB) {
 	db.AutoMigrate(&model.Buku{})
 	db.AutoMigrate(&model.User{}) // add migrate user
 	db.AutoMigrate(&model.LendBook{})
+
 }
 
 func main() {
 	var isRun bool = true
 	var inputMenu, input int
-	// var session model.User
+	var session uint
+	// var inputString string
 
 	Conn, err := connectGorm()
 	if err != nil {
@@ -48,8 +50,12 @@ func main() {
 	bukuCtl := controller.BukuControll{bukuMdl}
 	userMdl := model.UserModel{Conn}
 	UserCtl := controller.UserControll{userMdl}
+	// lendMdl := model.UserModel{Conn}
+	// lendCtrl := controller.UserControll{lendMdl}
 
 	for isRun {
+		fmt.Println("APLIKASI RENT BOOK")
+		fmt.Println("------------------")
 		fmt.Println("1. Login User")
 		fmt.Println("2. Update Profil")
 		fmt.Println("3. Lihat Buku")
@@ -76,11 +82,13 @@ func main() {
 
 				res, err := UserCtl.GetAll()
 				if err != nil {
-					fmt.Println("Username/Password Salah", err)
+					fmt.Println("Username/Password Salah", err.Error())
+				} else {
+					session = res.Id_User
 				}
 
-				session := res[logIn.Id_user].Id_user
-				fmt.Println(session)
+				// session := res[logIn.Id_user].Id_user
+				// fmt.Println(session)
 
 			case 2: // add register
 				var newUser model.User
@@ -99,6 +107,7 @@ func main() {
 				newUser.Alamat = scanner.Text()
 				fmt.Print("Masukan Foto Profil : ")
 				fmt.Scanln(&newUser.Foto_profil)
+				newUser.Status_boolean = true
 
 				res, err := UserCtl.Add(newUser)
 				if err != nil {
@@ -109,25 +118,97 @@ func main() {
 				break
 			}
 		case 2:
-			// update
-			var N UserModel
-			fmt.Println("pilih id user")
-			fmt.Scanln(&N.id_user)
-			user, err := UserCtl.GetAll(N)
-			fmt.Println("Ganti Nama user")
-			fmt.Scanln(&user.Nama_user)
-			fmt.Println("Ganti Email user")
-			fmt.Scanln(&user.Email)
-			fmt.Println("Ganti Password user")
-			fmt.Scanln(&user.Password)
-			fmt.Println("Ganti Alamat user")
-			fmt.Scanln(&user.Alamat)
-			err = userMdl.Update(&user)
-			if err != nil {
-				fmt.Println("Update failed")
-			} else {
+			if session == 0 {
+				fmt.Println("Login Required")
+				continue
+			}
+			var pilih bool = true
+			var plh int
 
-				fmt.Println(user.Insert(model.UserModel))
+			for pilih {
+				fmt.Println("Update Profil")
+				fmt.Println("1. Update")
+				fmt.Println("2. Non-aktifkan akun")
+				fmt.Println("3. Exit")
+				fmt.Println("Select menu: ")
+				fmt.Scan(&plh)
+				switch plh {
+				case 1:
+					if session == 0 {
+						fmt.Println("Anda harus login dulu")
+						continue
+					}
+					res, err := UserCtl.LogIn(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+					var updUser model.User
+					var n, e, p, a, f string
+					updUser.Id_user = uint(session)
+					// fmt.Println("Masukan Nama Update:")
+					// fmt.Scanln(&n)
+					fmt.Print("Masukan Nama Update : ")
+					scanner := bufio.NewScanner(os.Stdin)
+					scanner.Scan()
+					n = scanner.Text()
+					fmt.Print("Masukan Email Update : ")
+					scanner.Scan()
+					e = scanner.Text()
+					fmt.Print("Masukan Password : ")
+					scanner.Scan()
+					p = scanner.Text()
+					fmt.Print("Masukan Alamat Update : ")
+					scanner.Scan()
+					a = scanner.Text()
+					fmt.Print("Masukan Poto Profil : ")
+					fmt.Scanln(&f)
+
+					if n != "" {
+						updUser.Nama_user = a
+						UserCtl.UpdateNama(updUser)
+					}
+					if e != "" {
+						updUser.Email = e
+						UserCtl.UpdateEmail(updUser)
+					}
+					if p != "" {
+						updUser.Password = p
+						UserCtl.UpdatePassword(updUser)
+					}
+					if a != "" {
+						updUser.Alamat = a
+						UserCtl.UpdateAlamat(updUser)
+					}
+					if f != "" {
+						updUser.Foto_profil = f
+						UserCtl.UpdateFotoProfil(updUser)
+					}
+					fmt.Println(updUser)
+
+				case 2:
+					var stats model.User
+					res, err := UserCtl.LogIn(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+					stats.Status_boolean = false
+
+				case 3:
+					pilih = false
+					clearBoard()
+				}
 			}
 
 		case 3:
@@ -137,30 +218,125 @@ func main() {
 				fmt.Println("Some error on get", err.Error())
 
 			}
-			fmt.Println(res)
+			for i := 0; i < len(res); i++ {
+				fmt.Printf("%v \n", res[i])
+			}
 
 		case 4:
-			fmt.Println("Menu Buku Milikku")
-			fmt.Println("1. Lihat Buku milikku")
-			fmt.Println("2. Tambah Buku Milikku")
-			fmt.Println("3. Kembali")
-			fmt.Print("Masukkan Input : ")
-			fmt.Scanln(&input)
-			switch input {
-			case 1:
+			if session == 0 {
+				fmt.Println("Anda harus login dulu")
+				continue
+			}
 
-			case 2:
-				var newBuku model.Buku
-				fmt.Print("Masukan Nama : ")
-				scanner := bufio.NewScanner(os.Stdin)
-				scanner.Scan()
-				newBuku.Nama_buku = scanner.Text()
-				// fmt.Print("Masukan Email : ")
-				// fmt.Scanln(&newUser.Email)
-				// fmt.Print("Password : ")
-				// fmt.Scanln(&newUser.Password)
-			case 3:
-				break
+			var ulang bool = true
+			var inputBuku int
+			for ulang {
+				fmt.Println("Menu Buku Milikku")
+				fmt.Println("1. Lihat Buku milikku")
+				fmt.Println("2. Edit Buku milikku")
+				fmt.Println("3. Tambah Buku Milikku")
+				fmt.Println("4. Kembali")
+				fmt.Print("Masukkan Input : ")
+				fmt.Scanln(&input)
+				switch input {
+				case 1:
+					res, err := bukuCtl.GetMyBook(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+					if res == nil {
+						fmt.Println("Anda Tidak Punya Buku")
+					}
+				case 2:
+					res, err := bukuCtl.GetMyBook(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+						fmt.Print("Masukkan code buku yang ingin anda ubah : ")
+						fmt.Scanln(&inputBuku)
+
+						var newBuku model.Buku
+						var a, b, c, d, e string
+						newBuku.Id_user = uint(session)
+						newBuku.Id_buku = inputBuku
+						fmt.Print("Masukan Kode Buku : ")
+						fmt.Scanln(&a)
+						fmt.Print("Masukan Nama Buku : ")
+						scanner := bufio.NewScanner(os.Stdin)
+						scanner.Scan()
+						b = scanner.Text()
+						fmt.Print("Masukan Pengarang : ")
+						scanner.Scan()
+						c = scanner.Text()
+						fmt.Print("Masukan Gambar buku : ")
+						fmt.Scanln(&d)
+						fmt.Print("Masukan Deskripsi buku : ")
+						scanner.Scan()
+						e = scanner.Text()
+						if a != "" {
+							newBuku.Code_buku = a
+							bukuCtl.UpdateCode(newBuku)
+						}
+						if b != "" {
+							newBuku.Nama_buku = b
+							bukuCtl.UpdateNama(newBuku)
+						}
+						if c != "" {
+							newBuku.Pengarang = c
+							bukuCtl.UpdatePengarang(newBuku)
+						}
+						if d != "" {
+							newBuku.Gambar_buku = d
+							bukuCtl.UpdateGambar(newBuku)
+						}
+						if e != "" {
+							newBuku.Deskripsi = e
+							bukuCtl.UpdateDeskripsi(newBuku)
+						}
+						fmt.Println(newBuku)
+					}
+				case 3:
+					if session != 0 {
+						var newBuku model.Buku
+						newBuku.Id_user = uint(session)
+						fmt.Print("Masukan Kode Buku : ")
+						fmt.Scanln(&newBuku.Code_buku)
+						fmt.Print("Masukan Nama Buku : ")
+						scanner := bufio.NewScanner(os.Stdin)
+						scanner.Scan()
+						newBuku.Nama_buku = scanner.Text()
+						fmt.Print("Masukan Pengarang : ")
+						scanner.Scan()
+						newBuku.Pengarang = scanner.Text()
+						fmt.Print("Masukan Gambar buku : ")
+						fmt.Scanln(&newBuku.Gambar_buku)
+						fmt.Print("Masukan Deskripsi buku : ")
+						scanner.Scan()
+						newBuku.Deskripsi = scanner.Text()
+
+						res, err := bukuCtl.Add(newBuku)
+						if err != nil {
+							fmt.Println("some error on register", err.Error())
+						}
+						fmt.Println("Berhasil Registrasi", res)
+					} else {
+						fmt.Println("Login dulu untuk menambah buku")
+					}
+				case 4:
+					ulang = false
+					clearBoard()
+				}
 			}
 			var newUser model.User // newuser model
 			fmt.Print("Masukan Nama : ")
@@ -172,6 +348,10 @@ func main() {
 			fmt.Print("Password : ")
 			fmt.Scanln(&newUser.Password)
 		case 5:
+			if session == 0 {
+				fmt.Println("Anda harus login dulu")
+				continue
+			}
 
 		case 6:
 			isRun = false
