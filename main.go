@@ -39,7 +39,7 @@ func main() {
 	var isRun bool = true
 	var inputMenu, input int
 	var session uint
-	// var inputString string
+	var inputString string
 
 	Conn, err := connectGorm()
 	if err != nil {
@@ -70,6 +70,7 @@ func main() {
 			fmt.Println("1. Login User")
 			fmt.Println("2. Register")
 			fmt.Println("3. Kembali")
+			fmt.Print("Masukan input : ")
 			fmt.Scanln(&input)
 
 			switch input {
@@ -129,6 +130,17 @@ func main() {
 				fmt.Printf("%v \n", res[i])
 			}
 
+			fmt.Println("Apakah Anda ingin meminjam buku? (Y/N)")
+			fmt.Scanln(&inputString)
+			if session == 0 {
+				fmt.Println("Anda haru login untuk meminjam buku")
+			} else if inputString == "Y" {
+				fmt.Println("Masukkan ID Buku yang ingin dipinjam : ")
+				fmt.Scanln(&input)
+
+			} else {
+				continue
+			}
 		case 4:
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
@@ -211,7 +223,6 @@ func main() {
 							newBuku.Deskripsi = e
 							bukuCtl.UpdateDeskripsi(newBuku)
 						}
-						fmt.Println(newBuku)
 					}
 				case 3:
 					if session != 0 {
@@ -250,7 +261,6 @@ func main() {
 				fmt.Println("Anda harus login dulu")
 				continue
 			}
-
 		case 6:
 			isRun = false
 			clearBoard()
