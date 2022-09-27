@@ -24,7 +24,7 @@ type BukuModel struct {
 
 func (mm BukuModel) GetAll() ([]Buku, error) {
 	var res []Buku
-	err := mm.DB.Find(&res).Error
+	err := mm.DB.Where("is_lend = 0").Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
@@ -38,6 +38,16 @@ func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) {
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
+	}
+	return res, nil
+}
+
+func (mm BukuModel) GetName(id uint) (Buku, error) {
+	var res Buku
+	err := mm.DB.Select("nama_buku").Where("id_buku = ?", id).Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return Buku{}, err
 	}
 	return res, nil
 }
@@ -58,6 +68,10 @@ func (mm BukuModel) Update(newData Buku) (Buku, error) {
 		return Buku{}, err
 	}
 	return newData, nil
+}
+
+func (mm BukuModel) Dipinjam(newData Buku) {
+	mm.DB.Select("is_lend").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
 }
 
 func (mm BukuModel) UpdateCode(newData Buku) {

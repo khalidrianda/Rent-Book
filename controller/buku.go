@@ -22,6 +22,14 @@ func (mc BukuControll) GetMyBook(id uint) ([]model.Buku, error) {
 	return res, nil
 }
 
+func (mc BukuControll) GetName(id uint) (model.Buku, error) {
+	res, err := mc.Model.GetName(id)
+	if err != nil {
+		return model.Buku{}, err
+	}
+	return res, nil
+}
+
 func (gc BukuControll) Add(data model.Buku) (model.Buku, error) {
 	res, err := gc.Model.Insert(data)
 	if err != nil {
@@ -36,6 +44,10 @@ func (gc BukuControll) Update(data model.Buku) (model.Buku, error) {
 		return model.Buku{}, err
 	}
 	return res, nil
+}
+
+func (gc BukuControll) Dipinjam(data model.Buku) {
+	gc.Model.Dipinjam(data)
 }
 
 func (gc BukuControll) UpdateCode(data model.Buku) {
