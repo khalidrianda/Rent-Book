@@ -23,26 +23,22 @@ type UserModel struct {
 	DB *gorm.DB
 }
 
-func (um UserModel) GetAll(newData User) ([]User, error) {
+func (um UserModel) GetAll() ([]User, error) {
 	var res []User
-	err := um.DB.Where("email = ? && password = ?", newData.Email, newData.Password).Find(&res).Error
+	err := um.DB.Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
 	}
-	if res == nil {
-		return nil, nil
-	}
 	return res, nil
 }
 
-func (mm UserModel) Insert(newData User) (User, error) {
-	err := mm.DB.Create(&newData).Error
+func (um UserModel) Insert(newData User) (User, error) {
+	err := um.DB.Create(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
-
 	return newData, nil
 }
 
@@ -52,6 +48,5 @@ func (um UserModel) Update(newData User) (User, error) {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
-
 	return newData, nil
 }
