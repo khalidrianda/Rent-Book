@@ -15,7 +15,7 @@ import (
 )
 
 func connectGorm() (*gorm.DB, error) {
-	dsn := "root:@tcp(localhost:3306)/rent-book?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:@tcp(localhost:3306)/rent_book?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
@@ -82,11 +82,12 @@ func main() {
 				fmt.Print("Password: ")
 				fmt.Scanln(&logIn.Password)
 
-				res, err := UserCtl.GetAll()
+				res, err := UserCtl.GetAll(logIn)
 				if err != nil {
 					fmt.Println("Username/Password Salah", err.Error())
 				} else {
-					session = res.Id_User
+					session = res.Id_user
+					// fmt.Println(res)
 				}
 
 			case 2: // add register
@@ -358,19 +359,85 @@ func main() {
 					clearBoard()
 				}
 			}
-			var newUser model.User // newuser model
-			fmt.Print("Masukan Nama : ")
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
-			newUser.Nama_user = scanner.Text()
-			fmt.Print("Masukan Email : ")
-			fmt.Scanln(&newUser.Email)
-			fmt.Print("Password : ")
-			fmt.Scanln(&newUser.Password)
+			// var newUser model.User // newuser model
+			// fmt.Print("Masukan Nama : ")
+			// scanner := bufio.NewScanner(os.Stdin)
+			// scanner.Scan()
+			// newUser.Nama_user = scanner.Text()
+			// fmt.Print("Masukan Email : ")
+			// fmt.Scanln(&newUser.Email)
+			// fmt.Print("Password : ")
+			// fmt.Scanln(&newUser.Password)
 		case 5:
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
 				continue
+			}
+			res, err := lendCtrl.GetAll(session)
+			if err != nil {
+				fmt.Println("Some error on get", err.Error())
+
+			}
+			if res != nil {
+				for i := 0; i < len(res); i++ {
+					fmt.Printf("%v \n", res[i])
+				}
+			}
+			var ulang bool = true
+			var pilih int
+			for ulang {
+				fmt.Println("Buku yang dipinjam")
+				fmt.Println("1. melihat buku yang dipinjam")
+				fmt.Println("2. kembalikan buku yang dipinjam")
+				fmt.Println("3. kembali")
+				fmt.Println("pilih menu: ")
+				fmt.Scanln(&pilih)
+
+				switch pilih {
+				case 1:
+					res, err := lendCtrl.GetAll(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+				case 2:
+					res, err := lendCtrl.GetAll(session)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+
+					}
+					if res != nil {
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \n", res[i])
+						}
+					}
+					var ipt int
+					var back model.LendBook
+					fmt.Println("masukan ID buku yang ingin anda kembalikan")
+					fmt.Scan(&ipt)
+					var bk model.Buku
+					back.Id_buku = uint(ipt)
+					back.Kembalikan = true
+					_, err = lendCtrl.Return(back)
+					if err != nil {
+						fmt.Println("Some error on get", err.Error())
+					} else {
+						bk.Is_lend = false
+						bk.Id_buku = ipt
+						bukuCtl.Dikembalikan(bk)
+						continue
+					}
+
+				case 3:
+					ulang = false
+					clearBoard()
+					break
+				}
 			}
 		case 6:
 			isRun = false

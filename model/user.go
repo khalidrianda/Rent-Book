@@ -25,12 +25,12 @@ type UserModel struct {
 	DB *gorm.DB
 }
 
-func (um UserModel) GetAll() ([]User, error) {
-	var res []User
-	err := um.DB.Find(&res).Error
+func (um UserModel) GetAll(data User) (User, error) {
+	var res User
+	err := um.DB.Where("email = ? && password = ?", data.Email, data.Password).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
-		return nil, err
+		return User{}, err
 	}
 	return res, nil
 }
