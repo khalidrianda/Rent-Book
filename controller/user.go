@@ -50,3 +50,6 @@ func (uc UserControll) UpdateAlamat(data model.User) {
 func (uc UserControll) UpdateFotoProfil(data model.User) {
 	uc.Model.UpdateFotoProfil(data)
 }
+func (uc UserControll) UpdateStatus(data model.User) {
+	uc.Model.UpdateStatus(data)
+}
