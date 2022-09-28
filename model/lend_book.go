@@ -21,9 +21,9 @@ type LendBookModel struct {
 	DB *gorm.DB
 }
 
-func (mm LendBookModel) GetAll() ([]LendBook, error) {
+func (mm LendBookModel) GetAll(Id uint) ([]LendBook, error) {
 	var res []LendBook
-	err := mm.DB.Find(&res).Error
+	err := mm.DB.Where("id_peminjam = ?", Id).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err

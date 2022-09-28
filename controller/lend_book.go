@@ -6,8 +6,8 @@ type LendBookControl struct {
 	Model model.LendBookModel
 }
 
-func (mc LendBookControl) GetAll() ([]model.LendBook, error) {
-	res, err := mc.Model.GetAll()
+func (mc LendBookControl) GetAll(Id uint) ([]model.LendBook, error) {
+	res, err := mc.Model.GetAll(Id)
 	if err != nil {
 		return nil, err
 	}
