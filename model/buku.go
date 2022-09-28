@@ -73,6 +73,15 @@ func (mm BukuModel) Dikembalikan(newData Buku) {
 	mm.DB.Select("is_lend").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
 }
 
+func (mm BukuModel) Delete(newData Buku) (Buku, error) {
+	err := mm.DB.Where("id_buku = ?", newData.Id_buku).Delete(&newData).Error
+	if err != nil {
+		fmt.Println("error on insert", err.Error())
+		return Buku{}, err
+	}
+	return newData, nil
+}
+
 func (mm BukuModel) Dipinjam(newData Buku) {
 	mm.DB.Select("is_lend").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
 }

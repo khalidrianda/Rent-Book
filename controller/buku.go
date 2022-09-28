@@ -48,6 +48,7 @@ func (gc BukuControll) Update(data model.Buku) (model.Buku, error) {
 
 func (gc BukuControll) Dikembalikan(data model.Buku) {
 	gc.Model.Dikembalikan(data)
+
 }
 
 func (gc BukuControll) Dipinjam(data model.Buku) {
