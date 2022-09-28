@@ -6,8 +6,10 @@ type LendBookControl struct {
 	Model model.LendBookModel
 }
 
-func (mc LendBookControl) GetAll(s uint) ([]model.LendBook, error) {
-	res, err := mc.Model.GetAll(s)
+
+func (mc LendBookControl) GetAll(Id uint) ([]model.LendBook, error) {
+	res, err := mc.Model.GetAll(Id)
+
 	if err != nil {
 		return nil, err
 	}
@@ -22,8 +24,9 @@ func (gc LendBookControl) Add(data model.LendBook) (model.LendBook, error) {
 	return res, nil
 }
 
-func (gc LendBookControl) Delete(data model.LendBook) (model.LendBook, error) {
-	res, err := gc.Model.Delete(data)
+
+func (gc LendBookControl) Return(data model.LendBook) (model.LendBook, error) {
+	res, err := gc.Model.Return(data)
 	if err != nil {
 		return model.LendBook{}, err
 	}

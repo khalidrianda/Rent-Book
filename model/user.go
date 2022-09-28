@@ -25,10 +25,9 @@ type UserModel struct {
 	DB *gorm.DB
 }
 
-func (um UserModel) GetAll(newData User) (User, error) {
+func (um UserModel) GetAll(data User) (User, error) {
 	var res User
-	err := um.DB.Where("email = ? && password = ?", newData.Email, newData.Password).Find(&res).Error
-
+	err := um.DB.Where("email = ? && password = ?", data.Email, data.Password).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return User{}, err
@@ -36,22 +35,63 @@ func (um UserModel) GetAll(newData User) (User, error) {
 	return res, nil
 }
 
-func (mm UserModel) Insert(newData User) (User, error) {
-	err := mm.DB.Create(&newData).Error
+func (um UserModel) GetUser(id uint) ([]User, error) {
+	var res []User
+	err := um.DB.Where("id_user = ?", id).Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return nil, err
+	}
+	return res, nil
+}
+
+func (um UserModel) LogIn(Id uint) ([]User, error) {
+	var res []User
+	err := um.DB.Where("id_user = ?", Id).Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return nil, err
+	}
+	return res, nil
+}
+
+func (um UserModel) Insert(newData User) (User, error) {
+	err := um.DB.Create(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
-
 	return newData, nil
 }
 
 func (um UserModel) Update(newData User) (User, error) {
-	err := um.DB.Save(&newData).Error
+	err := um.DB.Where("id_nama = ?", newData.Id_user).Updates(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return User{}, err
 	}
-
 	return newData, nil
+}
+
+func (um UserModel) UpdateId(newData User) {
+	um.DB.Select("Id_user").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdateNama(newData User) {
+	um.DB.Select("Nama_user").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdateEmail(newData User) {
+	um.DB.Select("Email").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdatePassword(newData User) {
+	um.DB.Select("Password").Where("Id_user = ?", newData.Id_user).Updates(&newData)
+}
+
+func (um UserModel) UpdateAlamat(newData User) {
+	um.DB.Select("Alamat").Where("Id_User = ?", newData.Id_user).Updates(&newData)
+}
+func (um UserModel) UpdateFotoProfil(newData User) {
+	um.DB.Select("Foto_profil").Where("Id_User = ?", newData.Id_user).Updates(&newData)
 }

@@ -69,6 +69,9 @@ func (mm BukuModel) Update(newData Buku) (Buku, error) {
 	}
 	return newData, nil
 }
+func (mm BukuModel) Dikembalikan(newData Buku) {
+	mm.DB.Select("is_lend").Where("id_buku = ?", newData.Id_buku).Updates(&newData)
+}
 
 func (mm BukuModel) Delete(newData Buku) (Buku, error) {
 	err := mm.DB.Where("id_buku = ?", newData.Id_buku).Delete(&newData).Error
