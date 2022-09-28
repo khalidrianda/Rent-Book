@@ -72,3 +72,6 @@ func (um UserModel) UpdateAlamat(newData User) {
 func (um UserModel) UpdateFotoProfil(newData User) {
 	um.DB.Select("Foto_profil").Where("Id_User = ?", newData.Id_user).Updates(&newData)
 }
+func (um UserModel) UpdateStatus(newData User) {
+	um.DB.Select("status").Where("Id_User = ?", newData.Id_user).Updates(&newData)
+}
