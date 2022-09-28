@@ -35,12 +35,12 @@ func (um UserModel) GetAll(data User) (User, error) {
 	return res, nil
 }
 
-func (um UserModel) LogIn(Id uint) ([]User, error) {
-	var res []User
+func (um UserModel) LogIn(Id uint) (User, error) {
+	var res User
 	err := um.DB.Where("id_user = ?", Id).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
-		return nil, err
+		return User{}, err
 	}
 	return res, nil
 }

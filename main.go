@@ -113,8 +113,13 @@ func main() {
 				res, err := UserCtl.Add(newUser)
 				if err != nil {
 					fmt.Println("some error on register", err.Error())
+				} else {
+					clearBoard()
+					fmt.Println("Berhasil Registrasi")
+					session = res.Id_user
+					fmt.Printf("Auto Login Berhasil %v \n", res.Nama_user)
 				}
-				fmt.Println("Berhasil Registrasi", res)
+
 			case 3: //keluar
 				break
 			}
@@ -131,7 +136,7 @@ func main() {
 				fmt.Println("1. Update")
 				fmt.Println("2. Non-aktifkan akun")
 				fmt.Println("3. Exit")
-				fmt.Println("Select menu: ")
+				fmt.Print("Select menu: ")
 				fmt.Scanln(&plh)
 				switch plh {
 				case 1:
@@ -143,17 +148,14 @@ func main() {
 					if err != nil {
 						fmt.Println("Some error on get", err.Error())
 
-					}
-					if res != nil {
-						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
-						}
+					} else {
+						fmt.Printf("Nama \t Email \t Alamat \t Foto Profil \n")
+						fmt.Printf("%v \t %v \t %v \t %v \n", res.Nama_user, res.Email, res.Alamat, res.Foto_profil)
 					}
 					var updUser model.User
 					var n, e, p, a, f string
 					updUser.Id_user = uint(session)
-					// fmt.Println("Masukan Nama Update:")
-					// fmt.Scanln(&n)
+					fmt.Println("Kosongkan yang tidak ingin dirubah")
 					fmt.Print("Masukan Nama Update : ")
 					scanner := bufio.NewScanner(os.Stdin)
 					scanner.Scan()
@@ -169,35 +171,40 @@ func main() {
 					a = scanner.Text()
 					fmt.Print("Masukan Poto Profil : ")
 					fmt.Scanln(&f)
+					clearBoard()
 
 					if n != "" {
-						updUser.Nama_user = a
+						updUser.Nama_user = n
 						UserCtl.UpdateNama(updUser)
+						fmt.Printf("Nama Telah Berganti Menjadi %v \n", updUser.Nama_user)
 					}
 					if e != "" {
 						updUser.Email = e
 						UserCtl.UpdateEmail(updUser)
+						fmt.Printf("Email Telah Berganti Menjadi %v \n", updUser.Email)
 					}
 					if p != "" {
 						updUser.Password = p
 						UserCtl.UpdatePassword(updUser)
+						fmt.Println("Password Berhasil Diganti")
 					}
 					if a != "" {
 						updUser.Alamat = a
 						UserCtl.UpdateAlamat(updUser)
+						fmt.Printf("Alamat Telah Berganti Menjadi %v \n", updUser.Alamat)
 					}
 					if f != "" {
 						updUser.Foto_profil = f
 						UserCtl.UpdateFotoProfil(updUser)
+						fmt.Printf("Foto Profil Telah Berganti Menjadi %v \n", updUser.Foto_profil)
 					}
-					fmt.Println(updUser)
 
 				case 2: // Non Aktifkan Profil
 					var stats model.User
 					var choice string
 					stats.Status_boolean = false
 					stats.Id_user = session
-					fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
+					fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N) ")
 					fmt.Scanln(&choice)
 					if choice == "Y" {
 						UserCtl.UpdateStatus(stats)
@@ -222,12 +229,12 @@ func main() {
 				fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
 			}
 
-			fmt.Println("Apakah Anda ingin meminjam buku? (Y/N)")
+			fmt.Print("Apakah Anda ingin meminjam buku? (Y/N) ")
 			fmt.Scanln(&inputString)
 			if session == 0 {
 				fmt.Println("Anda haru login untuk meminjam buku")
 			} else if inputString == "Y" {
-				fmt.Println("Masukkan ID Buku yang ingin dipinjam : ")
+				fmt.Print("Masukkan ID Buku yang ingin dipinjam : ")
 				fmt.Scanln(&input)
 				var pinjamBuku model.LendBook
 				var tempBuku model.Buku
@@ -244,7 +251,8 @@ func main() {
 			} else {
 				continue
 			}
-		case 4:
+
+		case 4: //Buku Milikku
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
 				continue
@@ -262,7 +270,7 @@ func main() {
 				fmt.Scanln(&input)
 				switch input {
 
-				case 1:
+				case 1: //Lihat Buku Milikku
 					res, err := bukuCtl.GetMyBook(session)
 					if err != nil {
 						fmt.Println("Some error on get", err.Error())
@@ -278,7 +286,7 @@ func main() {
 						fmt.Println("Anda Tidak Punya Buku")
 					}
 
-				case 2:
+				case 2: //Ubah Buku Milikku
 					res, err := bukuCtl.GetMyBook(session)
 					if err != nil {
 						fmt.Println("Some error on get", err.Error())
@@ -287,12 +295,12 @@ func main() {
 					if res != nil {
 						fmt.Println("Buku Millikku")
 						fmt.Println("------------ ")
-						fmt.Println("1. Ubah Data Buku : ")
-						fmt.Println("2. Hapus Buku : ")
+						fmt.Println("1. Ubah Data Buku")
+						fmt.Println("2. Hapus Buku")
 						fmt.Print("Masukkan input : ")
 						fmt.Scanln(&inputBook)
 						switch inputBook {
-						case 1:
+						case 1: // Ubah/Update Data Buku
 							fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
 							for i := 0; i < len(res); i++ {
 								fmt.Printf("%v \t %v \t %v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Gambar_buku, res[i].Deskripsi)
@@ -320,24 +328,29 @@ func main() {
 							if a != "" {
 								newBuku.Code_buku = a
 								bukuCtl.UpdateCode(newBuku)
+								fmt.Printf("Code Buku Telah Berganti Menjadi %v \n", newBuku.Code_buku)
 							}
 							if b != "" {
 								newBuku.Nama_buku = b
 								bukuCtl.UpdateNama(newBuku)
+								fmt.Printf("Nama Buku Telah Berganti Menjadi %v \n", newBuku.Nama_buku)
 							}
 							if c != "" {
 								newBuku.Pengarang = c
 								bukuCtl.UpdatePengarang(newBuku)
+								fmt.Printf("Pengarang Buku Telah Berganti Menjadi %v \n", newBuku.Pengarang)
 							}
 							if d != "" {
 								newBuku.Gambar_buku = d
 								bukuCtl.UpdateGambar(newBuku)
+								fmt.Printf("Gambar Buku Telah Berganti Menjadi %v \n", newBuku.Gambar_buku)
 							}
 							if e != "" {
 								newBuku.Deskripsi = e
 								bukuCtl.UpdateDeskripsi(newBuku)
+								fmt.Printf("Deskrip Buku Telah Berganti Menjadi %v \n", newBuku.Deskripsi)
 							}
-						case 2:
+						case 2: //Hapus Buku Milikku
 							fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
 							for i := 0; i < len(res); i++ {
 								fmt.Printf("%v \t %v \t %v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Gambar_buku, res[i].Deskripsi)
@@ -358,7 +371,7 @@ func main() {
 						fmt.Println("Anda Tidak Punya Buku")
 					}
 
-				case 3:
+				case 3: //Tambah Buku Milikku
 					if session != 0 {
 						var newBuku model.Buku
 						newBuku.Id_user = uint(session)
@@ -377,11 +390,12 @@ func main() {
 						scanner.Scan()
 						newBuku.Deskripsi = scanner.Text()
 
-						res, err := bukuCtl.Add(newBuku)
+						_, err := bukuCtl.Add(newBuku)
 						if err != nil {
 							fmt.Println("some error on register", err.Error())
+						} else {
+							fmt.Println("Berhasil Registrasi Buku")
 						}
-						fmt.Println("Berhasil Registrasi", res)
 					} else {
 						fmt.Println("Login dulu untuk menambah buku")
 					}
@@ -390,41 +404,33 @@ func main() {
 					clearBoard()
 				}
 			}
-		case 5:
+		case 5: //Buku yang dipinjam
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
 				continue
 			}
-			res, err := lendCtrl.GetAll(session)
-			if err != nil {
-				fmt.Println("Some error on get", err.Error())
 
-			}
-			if res != nil {
-				for i := 0; i < len(res); i++ {
-					fmt.Printf("%v \n", res[i])
-				}
-			}
 			var ulang bool = true
 			var pilih int
 			for ulang {
 				fmt.Println("Buku yang dipinjam")
-				fmt.Println("1. melihat buku yang dipinjam")
-				fmt.Println("2. kembalikan buku yang dipinjam")
-				fmt.Println("3. kembali")
-				fmt.Println("pilih menu: ")
+				fmt.Println("1. Melihat buku yang dipinjam")
+				fmt.Println("2. Kembalikan buku yang dipinjam")
+				fmt.Println("3. Kembali")
+				fmt.Print("Pilih menu: ")
 				fmt.Scanln(&pilih)
 
 				switch pilih {
-				case 1:
+				case 1: //Lihat buku yang dipinjam
 					res, err := lendCtrl.GetAll(session)
 					if err != nil {
 						fmt.Println("Some error on get", err.Error())
 
 					}
 					if res != nil {
+						fmt.Printf("Id_buku \t Nama Buku \t Batas Waktu \n")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+							fmt.Printf("%v \t\t %v \t\t %v \n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu.Format("02-January-2006"))
 						}
 					}
 				case 2:
@@ -434,13 +440,14 @@ func main() {
 
 					}
 					if res != nil {
+						fmt.Printf("Id_buku \t Nama Buku \t Batas Waktu \n")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+							fmt.Printf("%v \t\t %v \t\t %v \n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu.Format("02-January-2006"))
 						}
 					}
 					var ipt int
 					var back model.LendBook
-					fmt.Println("masukan ID buku yang ingin anda kembalikan")
+					fmt.Println("mMsukan ID buku yang ingin anda kembalikan")
 					fmt.Scanln(&ipt)
 					var bk model.Buku
 					back.Id_buku = uint(ipt)

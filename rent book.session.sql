@@ -1,4 +1,4 @@
-create database rent-book;
+create database rent_book;
 use rent-book;
 
 DROP TABLE users;
