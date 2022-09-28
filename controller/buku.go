@@ -46,6 +46,14 @@ func (gc BukuControll) Update(data model.Buku) (model.Buku, error) {
 	return res, nil
 }
 
+func (gc BukuControll) Delete(data model.Buku) (model.Buku, error) {
+	res, err := gc.Model.Delete(data)
+	if err != nil {
+		return model.Buku{}, err
+	}
+	return res, nil
+}
+
 func (gc BukuControll) Dipinjam(data model.Buku) {
 	gc.Model.Dipinjam(data)
 }

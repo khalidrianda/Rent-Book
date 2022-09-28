@@ -87,6 +87,8 @@ func main() {
 					fmt.Println("Username/Password Salah", err.Error())
 				} else {
 					session = res.Id_user
+					clearBoard()
+					fmt.Printf("Selamat Datang, %v!!! \n", res.Nama_user)
 				}
 
 			case 2: // add register
@@ -124,8 +126,10 @@ func main() {
 				fmt.Println("Some error on get", err.Error())
 
 			}
+
+			fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
 			for i := 0; i < len(res); i++ {
-				fmt.Printf("%v \n", res[i])
+				fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
 			}
 
 			fmt.Println("Apakah Anda ingin meminjam buku? (Y/N)")
@@ -157,7 +161,7 @@ func main() {
 			}
 
 			var ulang bool = true
-			var inputBuku int
+			var inputBuku, inputBook int
 			for ulang {
 				fmt.Println("Menu Buku Milikku")
 				fmt.Println("1. Lihat Buku milikku")
@@ -167,6 +171,7 @@ func main() {
 				fmt.Print("Masukkan Input : ")
 				fmt.Scanln(&input)
 				switch input {
+
 				case 1:
 					res, err := bukuCtl.GetMyBook(session)
 					if err != nil {
@@ -174,13 +179,15 @@ func main() {
 
 					}
 					if res != nil {
+						fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+							fmt.Printf("%v \t %v \t %v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Gambar_buku, res[i].Deskripsi)
 						}
 					}
 					if res == nil {
 						fmt.Println("Anda Tidak Punya Buku")
 					}
+
 				case 2:
 					res, err := bukuCtl.GetMyBook(session)
 					if err != nil {
@@ -188,51 +195,79 @@ func main() {
 
 					}
 					if res != nil {
-						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+						fmt.Println("Buku Millikku")
+						fmt.Println("------------ ")
+						fmt.Println("1. Ubah Data Buku : ")
+						fmt.Println("2. Hapus Buku : ")
+						fmt.Print("Masukkan input : ")
+						fmt.Scanln(&inputBook)
+						switch inputBook {
+						case 1:
+							fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
+							for i := 0; i < len(res); i++ {
+								fmt.Printf("%v \t %v \t %v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Gambar_buku, res[i].Deskripsi)
+							}
+							fmt.Print("Masukkan ID Buku yang Ingin Diubah : ")
+							fmt.Scanln(&inputBuku)
+							var newBuku model.Buku
+							var a, b, c, d, e string
+							newBuku.Id_user = uint(session)
+							newBuku.Id_buku = inputBuku
+							fmt.Print("Masukan Kode Buku : ")
+							fmt.Scanln(&a)
+							fmt.Print("Masukan Nama Buku : ")
+							scanner := bufio.NewScanner(os.Stdin)
+							scanner.Scan()
+							b = scanner.Text()
+							fmt.Print("Masukan Pengarang : ")
+							scanner.Scan()
+							c = scanner.Text()
+							fmt.Print("Masukan Gambar buku : ")
+							fmt.Scanln(&d)
+							fmt.Print("Masukan Deskripsi buku : ")
+							scanner.Scan()
+							e = scanner.Text()
+							if a != "" {
+								newBuku.Code_buku = a
+								bukuCtl.UpdateCode(newBuku)
+							}
+							if b != "" {
+								newBuku.Nama_buku = b
+								bukuCtl.UpdateNama(newBuku)
+							}
+							if c != "" {
+								newBuku.Pengarang = c
+								bukuCtl.UpdatePengarang(newBuku)
+							}
+							if d != "" {
+								newBuku.Gambar_buku = d
+								bukuCtl.UpdateGambar(newBuku)
+							}
+							if e != "" {
+								newBuku.Deskripsi = e
+								bukuCtl.UpdateDeskripsi(newBuku)
+							}
+						case 2:
+							fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
+							for i := 0; i < len(res); i++ {
+								fmt.Printf("%v \t %v \t %v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Gambar_buku, res[i].Deskripsi)
+							}
+							fmt.Print("Masukkan ID Buku yang Ingin Dihapus : ")
+							fmt.Scanln(&inputBook)
+							var newBuku model.Buku
+							newBuku.Id_buku = inputBook
+							_, err := bukuCtl.Delete(newBuku)
+							if err != nil {
+								fmt.Println("some error on delete", err.Error())
+							} else {
+								fmt.Println("Buku telah dihapus")
+							}
 						}
-						fmt.Print("Masukkan code buku yang ingin anda ubah : ")
-						fmt.Scanln(&inputBuku)
 
-						var newBuku model.Buku
-						var a, b, c, d, e string
-						newBuku.Id_user = uint(session)
-						newBuku.Id_buku = inputBuku
-						fmt.Print("Masukan Kode Buku : ")
-						fmt.Scanln(&a)
-						fmt.Print("Masukan Nama Buku : ")
-						scanner := bufio.NewScanner(os.Stdin)
-						scanner.Scan()
-						b = scanner.Text()
-						fmt.Print("Masukan Pengarang : ")
-						scanner.Scan()
-						c = scanner.Text()
-						fmt.Print("Masukan Gambar buku : ")
-						fmt.Scanln(&d)
-						fmt.Print("Masukan Deskripsi buku : ")
-						scanner.Scan()
-						e = scanner.Text()
-						if a != "" {
-							newBuku.Code_buku = a
-							bukuCtl.UpdateCode(newBuku)
-						}
-						if b != "" {
-							newBuku.Nama_buku = b
-							bukuCtl.UpdateNama(newBuku)
-						}
-						if c != "" {
-							newBuku.Pengarang = c
-							bukuCtl.UpdatePengarang(newBuku)
-						}
-						if d != "" {
-							newBuku.Gambar_buku = d
-							bukuCtl.UpdateGambar(newBuku)
-						}
-						if e != "" {
-							newBuku.Deskripsi = e
-							bukuCtl.UpdateDeskripsi(newBuku)
-						}
+					} else {
+						fmt.Println("Anda Tidak Punya Buku")
 					}
+
 				case 3:
 					if session != 0 {
 						var newBuku model.Buku
@@ -270,6 +305,7 @@ func main() {
 				fmt.Println("Anda harus login dulu")
 				continue
 			}
+
 		case 6:
 			isRun = false
 			clearBoard()

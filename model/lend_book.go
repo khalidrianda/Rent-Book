@@ -21,9 +21,9 @@ type LendBookModel struct {
 	DB *gorm.DB
 }
 
-func (mm LendBookModel) GetAll() ([]LendBook, error) {
+func (mm LendBookModel) GetAll(s uint) ([]LendBook, error) {
 	var res []LendBook
-	err := mm.DB.Find(&res).Error
+	err := mm.DB.Where("id_peminjam = ?", s).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
@@ -42,6 +42,15 @@ func (mm LendBookModel) Insert(newData LendBook) (LendBook, error) {
 
 func (mm LendBookModel) Update(newData LendBook) (LendBook, error) {
 	err := mm.DB.Save(&newData).Error
+	if err != nil {
+		fmt.Println("error on insert", err.Error())
+		return LendBook{}, err
+	}
+	return newData, nil
+}
+
+func (mm LendBookModel) Delete(newData LendBook) (LendBook, error) {
+	err := mm.DB.Where("id_buku = ?", newData.Id_buku).Delete(&newData).Error
 	if err != nil {
 		fmt.Println("error on insert", err.Error())
 		return LendBook{}, err
