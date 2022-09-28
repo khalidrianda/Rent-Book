@@ -121,7 +121,7 @@ func main() {
 		case 2:
 			if session == 0 {
 				fmt.Println("Login Required")
-				continue
+				break
 			}
 			var pilih bool = true
 			var plh int
@@ -131,8 +131,8 @@ func main() {
 				fmt.Println("1. Update")
 				fmt.Println("2. Non-aktifkan akun")
 				fmt.Println("3. Exit")
-				fmt.Println("Select menu: ")
-				fmt.Scan(&plh)
+				fmt.Print("Select menu: ")
+				fmt.Scanln(&plh)
 				switch plh {
 				case 1:
 					if session == 0 {
@@ -152,8 +152,7 @@ func main() {
 					var updUser model.User
 					var n, e, p, a, f string
 					updUser.Id_user = uint(session)
-					// fmt.Println("Masukan Nama Update:")
-					// fmt.Scanln(&n)
+					fmt.Println("Kosongkan yang Tidak ingin dirubah")
 					fmt.Print("Masukan Nama Update : ")
 					scanner := bufio.NewScanner(os.Stdin)
 					scanner.Scan()
@@ -171,7 +170,7 @@ func main() {
 					fmt.Scanln(&f)
 
 					if n != "" {
-						updUser.Nama_user = a
+						updUser.Nama_user = n
 						UserCtl.UpdateNama(updUser)
 					}
 					if e != "" {
@@ -190,7 +189,7 @@ func main() {
 						updUser.Foto_profil = f
 						UserCtl.UpdateFotoProfil(updUser)
 					}
-					fmt.Println(updUser)
+					fmt.Println("Update Berhasil")
 
 				case 2:
 					var stats model.User
@@ -380,11 +379,11 @@ func main() {
 						scanner.Scan()
 						newBuku.Deskripsi = scanner.Text()
 
-						res, err := bukuCtl.Add(newBuku)
+						_, err := bukuCtl.Add(newBuku)
 						if err != nil {
 							fmt.Println("some error on register", err.Error())
 						}
-						fmt.Println("Berhasil Registrasi", res)
+						fmt.Println("Berhasil Registrasi Buku")
 					} else {
 						fmt.Println("Login dulu untuk menambah buku")
 					}
@@ -398,16 +397,6 @@ func main() {
 				fmt.Println("Anda harus login dulu")
 				continue
 			}
-			res, err := lendCtrl.GetAll(session)
-			if err != nil {
-				fmt.Println("Some error on get", err.Error())
-
-			}
-			if res != nil {
-				for i := 0; i < len(res); i++ {
-					fmt.Printf("%v \n", res[i])
-				}
-			}
 			var ulang bool = true
 			var pilih int
 			for ulang {
@@ -415,7 +404,7 @@ func main() {
 				fmt.Println("1. melihat buku yang dipinjam")
 				fmt.Println("2. kembalikan buku yang dipinjam")
 				fmt.Println("3. kembali")
-				fmt.Println("pilih menu: ")
+				fmt.Print("pilih menu: ")
 				fmt.Scanln(&pilih)
 
 				switch pilih {
@@ -426,8 +415,9 @@ func main() {
 
 					}
 					if res != nil {
+						fmt.Println("ID \t Nama Buku \t Tanggal Pengembalian")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+							fmt.Printf("%v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu)
 						}
 					}
 				case 2:
@@ -437,14 +427,15 @@ func main() {
 
 					}
 					if res != nil {
+						fmt.Println("ID \t Nama Buku \t Tanggal Pengembalian")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+							fmt.Printf("%v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu)
 						}
 					}
 					var ipt int
 					var back model.LendBook
-					fmt.Println("masukan ID buku yang ingin anda kembalikan")
-					fmt.Scan(&ipt)
+					fmt.Print("masukan ID buku yang ingin anda kembalikan : ")
+					fmt.Scanln(&ipt)
 					var bk model.Buku
 					back.Id_buku = uint(ipt)
 					back.Kembalikan = true
@@ -461,7 +452,6 @@ func main() {
 				case 3:
 					ulang = false
 					clearBoard()
-					break
 				}
 			}
 		case 6:
