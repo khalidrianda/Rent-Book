@@ -38,7 +38,7 @@ func migrate(db *gorm.DB) {
 
 func main() {
 	var isRun bool = true
-	var inputMenu, input int
+	var inputMenu, input, input1 int
 	var session uint
 	var inputString string
 
@@ -218,6 +218,7 @@ func main() {
 
 		case 3:
 			// add list buku
+			var ulang bool = true
 			res, err := bukuCtl.GetAll(session)
 			if err != nil {
 				fmt.Println("Some error on get", err.Error())
@@ -229,27 +230,40 @@ func main() {
 				fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
 			}
 
-			fmt.Print("Apakah Anda ingin meminjam buku? (Y/N) ")
-			fmt.Scanln(&inputString)
-			if session == 0 {
-				fmt.Println("Anda haru login untuk meminjam buku")
-			} else if inputString == "Y" {
-				fmt.Print("Masukkan ID Buku yang ingin dipinjam : ")
+			for ulang {
+				fmt.Println("1. Pinjam Buku")
+				fmt.Println("2. Cari Buku")
+				fmt.Println("3. Kembali")
+				fmt.Print("Masukan input : ")
 				fmt.Scanln(&input)
-				var pinjamBuku model.LendBook
-				var tempBuku model.Buku
-				pinjamBuku.Id_buku = uint(input)
-				pinjamBuku.Id_peminjam = session
-				temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
-				pinjamBuku.Nama_buku = temp.Nama_buku
-				inOneMonth := time.Now().AddDate(0, 1, 0)
-				pinjamBuku.Batas_waktu = inOneMonth
-				lendCtrl.Add(pinjamBuku)
-				tempBuku.Id_buku = input
-				tempBuku.Is_lend = true
-				bukuCtl.Dipinjam(tempBuku)
-			} else {
-				continue
+				switch input {
+				case 1:
+					if session == 0 {
+						fmt.Println("Anda haru login untuk meminjam buku")
+						continue
+					} else if inputString == "Y" {
+						fmt.Print("Masukkan ID Buku yang ingin dipinjam : ")
+						fmt.Scanln(&input1)
+						var pinjamBuku model.LendBook
+						var tempBuku model.Buku
+						pinjamBuku.Id_buku = uint(input1)
+						pinjamBuku.Id_peminjam = session
+						temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
+						pinjamBuku.Nama_buku = temp.Nama_buku
+						inOneMonth := time.Now().AddDate(0, 1, 0)
+						pinjamBuku.Batas_waktu = inOneMonth
+						lendCtrl.Add(pinjamBuku)
+						tempBuku.Id_buku = input1
+						tempBuku.Is_lend = true
+						bukuCtl.Dipinjam(tempBuku)
+					}
+				case 2:
+					fmt.Print("Masukkan Nama Buku : ")
+					fmt.Scanln(&inputString)
+
+				case 3:
+					ulang = false
+				}
 			}
 
 		case 4: //Buku Milikku
@@ -447,7 +461,7 @@ func main() {
 					}
 					var ipt int
 					var back model.LendBook
-					fmt.Println("mMsukan ID buku yang ingin anda kembalikan")
+					fmt.Println("Masukan ID buku yang ingin anda kembalikan")
 					fmt.Scanln(&ipt)
 					var bk model.Buku
 					back.Id_buku = uint(ipt)
