@@ -30,6 +30,14 @@ func (mc BukuControll) GetName(id uint) (model.Buku, error) {
 	return res, nil
 }
 
+func (mc BukuControll) CariBuku(namaBuku string) ([]model.Buku, error) {
+	res, err := mc.Model.CariBuku(namaBuku)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
 func (gc BukuControll) Add(data model.Buku) (model.Buku, error) {
 	res, err := gc.Model.Insert(data)
 	if err != nil {

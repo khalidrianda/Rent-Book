@@ -260,7 +260,18 @@ func main() {
 				case 2:
 					fmt.Print("Masukkan Nama Buku : ")
 					fmt.Scanln(&inputString)
-
+					temp := "%"
+					temp += inputString
+					temp += "%"
+					res, err := bukuCtl.CariBuku(temp)
+					if err != nil {
+						fmt.Println("Buku Tidak Ada")
+					} else {
+						fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
+						for i := 0; i < len(res); i++ {
+							fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
+						}
+					}
 				case 3:
 					ulang = false
 				}
