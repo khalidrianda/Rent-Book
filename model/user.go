@@ -27,20 +27,10 @@ type UserModel struct {
 
 func (um UserModel) GetAll(data User) (User, error) {
 	var res User
-	err := um.DB.Where("email = ? && password = ?", data.Email, data.Password).Find(&res).Error
+	err := um.DB.Where("email = ? && password = ? && status=1", data.Email, data.Password).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return User{}, err
-	}
-	return res, nil
-}
-
-func (um UserModel) GetUser(id uint) ([]User, error) {
-	var res []User
-	err := um.DB.Where("id_user = ?", id).Find(&res).Error
-	if err != nil {
-		fmt.Println("error on query", err.Error())
-		return nil, err
 	}
 	return res, nil
 }
@@ -62,19 +52,6 @@ func (um UserModel) Insert(newData User) (User, error) {
 		return User{}, err
 	}
 	return newData, nil
-}
-
-func (um UserModel) Update(newData User) (User, error) {
-	err := um.DB.Where("id_nama = ?", newData.Id_user).Updates(&newData).Error
-	if err != nil {
-		fmt.Println("error on insert", err.Error())
-		return User{}, err
-	}
-	return newData, nil
-}
-
-func (um UserModel) UpdateId(newData User) {
-	um.DB.Select("Id_user").Where("Id_user = ?", newData.Id_user).Updates(&newData)
 }
 
 func (um UserModel) UpdateNama(newData User) {

@@ -32,18 +32,6 @@ func (uc UserControll) Add(data model.User) (model.User, error) {
 	return res, nil
 }
 
-func (uc UserControll) Update(data model.User) (model.User, error) {
-	res, err := uc.Model.Update(data)
-	if err != nil {
-		return model.User{}, err
-	}
-	return res, nil
-}
-
-func (uc UserControll) UpdateId(data model.User) {
-	uc.Model.UpdateId(data)
-}
-
 func (uc UserControll) UpdateNama(data model.User) {
 	uc.Model.UpdateNama(data)
 }
