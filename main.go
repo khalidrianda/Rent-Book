@@ -393,15 +393,6 @@ func main() {
 					clearBoard()
 				}
 			}
-			// var newUser model.User // newuser model
-			// fmt.Print("Masukan Nama : ")
-			// scanner := bufio.NewScanner(os.Stdin)
-			// scanner.Scan()
-			// newUser.Nama_user = scanner.Text()
-			// fmt.Print("Masukan Email : ")
-			// fmt.Scanln(&newUser.Email)
-			// fmt.Print("Password : ")
-			// fmt.Scanln(&newUser.Password)
 		case 5:
 			if session == 0 {
 				fmt.Println("Anda harus login dulu")
