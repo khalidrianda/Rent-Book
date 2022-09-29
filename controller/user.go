@@ -16,10 +16,10 @@ func (uc UserControll) GetAll(data model.User) (model.User, error) {
 	}
 	return res, nil
 }
-func (uc UserControll) LogIn(Id uint) ([]model.User, error) {
+func (uc UserControll) LogIn(Id uint) (model.User, error) {
 	res, err := uc.Model.LogIn(Id)
 	if err != nil {
-		return nil, err
+		return model.User{}, err
 	}
 	return res, nil
 }
