@@ -50,7 +50,6 @@ func (mm LendBookModel) Update(newData LendBook) (LendBook, error) {
 	return newData, nil
 }
 
-
 func (mm LendBookModel) Return(newData LendBook) (LendBook, error) {
 	err := mm.DB.Select("kembalikan").Where("id_buku=?", newData.Id_buku).Updates(&newData).Error
 	if err != nil {
@@ -58,4 +57,11 @@ func (mm LendBookModel) Return(newData LendBook) (LendBook, error) {
 		return LendBook{}, err
 	}
 	return newData, nil
+}
+
+func (mm LendBookModel) CariPinjamUser(Id uint) int64 {
+	var res int64
+	var lb LendBook
+	mm.DB.Where("id_peminjam = ? && kembalikan=0", Id).Find(&lb).Count(&res)
+	return res
 }

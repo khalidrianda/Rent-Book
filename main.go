@@ -193,14 +193,20 @@ func main() {
 					fmt.Println(updUser)
 
 				case 2: // Non Aktifkan Profil
-					var stats model.User
-					var choice string
-					stats.Status_boolean = false
-					stats.Id_user = session
-					fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
-					fmt.Scanln(&choice)
-					if choice == "Y" {
-						UserCtl.UpdateStatus(stats)
+					if lendCtrl.CariPinjamUser(session) > 0 {
+						fmt.Println("Anda masih mempunyai pinjaman buku")
+						continue
+					} else {
+						var stats model.User
+						var choice string
+						stats.Status_boolean = false
+						stats.Id_user = session
+						fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
+						fmt.Scanln(&choice)
+						if choice == "Y" {
+							UserCtl.UpdateStatus(stats)
+						}
+
 					}
 
 				case 3:
@@ -417,16 +423,31 @@ func main() {
 
 				switch pilih {
 				case 1:
+					// res, err := lendCtrl.GetAll(session)
+					// if err != nil {
+					// 	fmt.Println("Some error on get", err.Error())
+
+					// }
+					// if res != nil {
+					// 	for i := 0; i < len(res); i++ {
+					// 		fmt.Printf("%v \n", res[i])
+					// 	}
+					// }
 					res, err := lendCtrl.GetAll(session)
 					if err != nil {
 						fmt.Println("Some error on get", err.Error())
 
 					}
 					if res != nil {
+						fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \n", res[i])
+							fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Id_peminjaman, res[i].Nama_buku, res[i].Id_peminjam)
 						}
 					}
+					if res == nil {
+						fmt.Println("Anda Tidak Punya Buku")
+					}
+
 				case 2:
 					res, err := lendCtrl.GetAll(session)
 					if err != nil {
