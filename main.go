@@ -385,6 +385,7 @@ func main() {
 						fmt.Println("2. Hapus Buku")
 						fmt.Print("Masukkan input : ")
 						fmt.Scanln(&inputBook)
+						clearBoard()
 						switch inputBook {
 						case 1: // Ubah/Update Data Buku
 							fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
