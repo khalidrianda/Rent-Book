@@ -249,10 +249,11 @@ func main() {
 
 				}
 
-				fmt.Println("ID \t Nama Buku \t Pengarang \t Deskripsi")
+				fmt.Println("ID \t Kode Buku \t Nama Buku \t\t Pengarang \t\t Deskripsi")
 				for i := 0; i < len(res); i++ {
-					fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
+					fmt.Printf("%v \t %v \t\t %v \t\t %v \t\t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
 				}
+				fmt.Printf("\nMenu Buku \n")
 				fmt.Println("1. Pinjam Buku")
 				fmt.Println("2. Cari Buku")
 				fmt.Println("3. Kembali")
@@ -295,9 +296,9 @@ func main() {
 					if err != nil {
 						fmt.Println("Buku Tidak Ada")
 					} else {
-						fmt.Println("ID \t Code \t Nama Buku \t Pengarang \t Gambar \t Deskripsi")
+						fmt.Println("ID \t Kode Buku \t Nama Buku \t\t Pengarang \t\t Deskripsi")
 						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
+							fmt.Printf("%v \t %v \t\t %v \t\t %v \t\t %v\n", res[i].Id_buku, res[i].Code_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
 						}
 						fmt.Printf("\nApakah anda ingin Meminjam Buku? (Y/N) ")
 						fmt.Scanln(&inputString)
