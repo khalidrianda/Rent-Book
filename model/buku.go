@@ -82,6 +82,11 @@ func (mm BukuModel) Delete(newData Buku) (Buku, error) {
 	}
 	return newData, nil
 }
+func (mm BukuModel) DeleteBukuUser(Id uint) {
+	var newData Buku
+	mm.DB.Where("id_user = ?", Id).Delete(&newData)
+
+}
 
 func (mm BukuModel) Dipinjam(newData Buku) {
 	mm.DB.Select("is_lend").Where("id_buku = ?", newData.Id_buku).Updates(&newData)

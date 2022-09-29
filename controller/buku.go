@@ -53,6 +53,10 @@ func (gc BukuControll) Delete(data model.Buku) (model.Buku, error) {
 	}
 	return res, nil
 }
+func (gc BukuControll) DeleteBukuUser(id uint) {
+	gc.Model.DeleteBukuUser(id)
+
+}
 
 func (gc BukuControll) Dikembalikan(data model.Buku) {
 	gc.Model.Dikembalikan(data)

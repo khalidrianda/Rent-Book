@@ -205,6 +205,7 @@ func main() {
 						fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
 						fmt.Scanln(&choice)
 						if choice == "Y" {
+							bukuCtl.DeleteBukuUser(session)
 							UserCtl.UpdateStatus(stats)
 						}
 					} else {
