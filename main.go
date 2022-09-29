@@ -253,21 +253,6 @@ func main() {
 				fmt.Println("3. Kembali")
 				fmt.Print("Masukan input : ")
 				fmt.Scanln(&input)
-				var pinjamBuku model.LendBook
-				var tempBuku model.Buku
-				pinjamBuku.Id_buku = uint(input)
-				pinjamBuku.Id_peminjam = session
-				temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
-				pinjamBuku.Nama_buku = temp.Nama_buku
-				pinjamBuku.Id_Pemilik = temp.Id_user
-				inOneMonth := time.Now().AddDate(0, 1, 0)
-				pinjamBuku.Batas_waktu = inOneMonth
-				lendCtrl.Add(pinjamBuku)
-				tempBuku.Id_buku = input
-				tempBuku.Is_lend = true
-				bukuCtl.Dipinjam(tempBuku)
-			} else {
-				continue
 
 				switch input {
 				case 1:
@@ -279,14 +264,15 @@ func main() {
 						fmt.Scanln(&input1)
 						var pinjamBuku model.LendBook
 						var tempBuku model.Buku
-						pinjamBuku.Id_buku = uint(input1)
+						pinjamBuku.Id_buku = uint(input)
 						pinjamBuku.Id_peminjam = session
 						temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
 						pinjamBuku.Nama_buku = temp.Nama_buku
+						pinjamBuku.Id_Pemilik = temp.Id_user
 						inOneMonth := time.Now().AddDate(0, 1, 0)
 						pinjamBuku.Batas_waktu = inOneMonth
 						lendCtrl.Add(pinjamBuku)
-						tempBuku.Id_buku = input1
+						tempBuku.Id_buku = input
 						tempBuku.Is_lend = true
 						bukuCtl.Dipinjam(tempBuku)
 					}
