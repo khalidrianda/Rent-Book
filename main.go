@@ -193,9 +193,20 @@ func main() {
 					fmt.Println(updUser)
 
 				case 2: // Non Aktifkan Profil
-					if lendCtrl.CariPinjamUser(session) > 0 {
+					res, ser := lendCtrl.CariPinjamUser(session)
+					if res > 0 {
 						fmt.Println("Anda masih mempunyai pinjaman buku")
-						continue
+					} else if ser > 0 {
+						fmt.Println("Anda masih ada buku yang dipinjamkan")
+						var stats model.User
+						var choice string
+						stats.Status_boolean = false
+						stats.Id_user = session
+						fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
+						fmt.Scanln(&choice)
+						if choice == "Y" {
+							UserCtl.UpdateStatus(stats)
+						}
 					} else {
 						var stats model.User
 						var choice string
@@ -241,6 +252,7 @@ func main() {
 				pinjamBuku.Id_peminjam = session
 				temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
 				pinjamBuku.Nama_buku = temp.Nama_buku
+				pinjamBuku.Id_Pemilik = temp.Id_user
 				inOneMonth := time.Now().AddDate(0, 1, 0)
 				pinjamBuku.Batas_waktu = inOneMonth
 				lendCtrl.Add(pinjamBuku)

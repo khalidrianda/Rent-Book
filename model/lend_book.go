@@ -9,6 +9,7 @@ import (
 
 type LendBook struct {
 	Id_peminjaman int       `gorm:"column:id_peminjaman;primaryKey;autoIncrement"`
+	Id_Pemilik    uint      `gorm:"column:id_pemilik"`
 	Id_peminjam   uint      `gorm:"column:id_peminjam"`
 	Id_buku       uint      `gorm:"column:id_buku"`
 	Nama_buku     string    `gorm:"column:nama_buku"`
@@ -59,9 +60,10 @@ func (mm LendBookModel) Return(newData LendBook) (LendBook, error) {
 	return newData, nil
 }
 
-func (mm LendBookModel) CariPinjamUser(Id uint) int64 {
-	var res int64
+func (mm LendBookModel) CariPinjamUser(Id uint) (int64, int64) {
+	var res, ser int64
 	var lb LendBook
 	mm.DB.Where("id_peminjam = ? && kembalikan=0", Id).Find(&lb).Count(&res)
-	return res
+	mm.DB.Where("id_pemilik = ? && kembalikan=0", Id).Find(&lb).Count(&ser)
+	return res, ser
 }

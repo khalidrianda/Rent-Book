@@ -44,7 +44,7 @@ func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) {
 
 func (mm BukuModel) GetName(id uint) (Buku, error) {
 	var res Buku
-	err := mm.DB.Select("nama_buku").Where("id_buku = ?", id).Find(&res).Error
+	err := mm.DB.Select("nama_buku,id_user").Where("id_buku = ?", id).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return Buku{}, err

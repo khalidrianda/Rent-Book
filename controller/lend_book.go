@@ -31,8 +31,8 @@ func (gc LendBookControl) Return(data model.LendBook) (model.LendBook, error) {
 	return res, nil
 }
 
-func (mc LendBookControl) CariPinjamUser(Id uint) int64 {
-	res := mc.Model.CariPinjamUser(Id)
+func (mc LendBookControl) CariPinjamUser(Id uint) (int64, int64) {
+	res, ser := mc.Model.CariPinjamUser(Id)
 
-	return res
+	return res, ser
 }
