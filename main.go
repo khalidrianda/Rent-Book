@@ -272,7 +272,7 @@ func main() {
 					fmt.Scanln(&input1)
 					var pinjamBuku model.LendBook
 					var tempBuku model.Buku
-					pinjamBuku.Id_buku = uint(input)
+					pinjamBuku.Id_buku = uint(input1)
 					pinjamBuku.Id_peminjam = session
 					temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
 					pinjamBuku.Nama_buku = temp.Nama_buku
@@ -280,12 +280,12 @@ func main() {
 					inOneMonth := time.Now().AddDate(0, 1, 0)
 					pinjamBuku.Batas_waktu = inOneMonth
 					lendCtrl.Add(pinjamBuku)
-					tempBuku.Id_buku = input
+					tempBuku.Id_buku = input1
 					tempBuku.Is_lend = true
 					bukuCtl.Dipinjam(tempBuku)
 					clearBoard()
 				case 2:
-					fmt.Print("Masukkan Nama Buku : ")
+					fmt.Print("Masukkan Kata Kunci : ")
 					fmt.Scanln(&inputString)
 					temp := "%"
 					temp += inputString
@@ -299,7 +299,35 @@ func main() {
 						for i := 0; i < len(res); i++ {
 							fmt.Printf("%v \t %v \t %v \t %v\n", res[i].Id_buku, res[i].Nama_buku, res[i].Pengarang, res[i].Deskripsi)
 						}
+						fmt.Printf("\nApakah anda ingin Meminjam Buku? (Y/N) ")
+						fmt.Scanln(&inputString)
+
+						if session == 0 {
+							clearBoard()
+							fmt.Println("Anda haru login untuk meminjam buku")
+							continue
+						}
+
+						if inputString == "Y" {
+							fmt.Print("Masukkan ID Buku yang ingin dipinjam : ")
+							fmt.Scanln(&input1)
+							var pinjamBuku model.LendBook
+							var tempBuku model.Buku
+							pinjamBuku.Id_buku = uint(input1)
+							pinjamBuku.Id_peminjam = session
+							temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
+							pinjamBuku.Nama_buku = temp.Nama_buku
+							pinjamBuku.Id_Pemilik = temp.Id_user
+							inOneMonth := time.Now().AddDate(0, 1, 0)
+							pinjamBuku.Batas_waktu = inOneMonth
+							lendCtrl.Add(pinjamBuku)
+							tempBuku.Id_buku = input1
+							tempBuku.Is_lend = true
+							bukuCtl.Dipinjam(tempBuku)
+							clearBoard()
+						}
 					}
+
 				case 3:
 					ulang = false
 					clearBoard()
@@ -340,6 +368,7 @@ func main() {
 					if res == nil {
 						fmt.Println("Anda Tidak Punya Buku")
 					}
+					fmt.Println()
 
 				case 2: //Ubah Buku Milikku
 					clearBoard()
@@ -381,6 +410,7 @@ func main() {
 							fmt.Print("Masukan Deskripsi buku : ")
 							scanner.Scan()
 							e = scanner.Text()
+							clearBoard()
 							if a != "" {
 								newBuku.Code_buku = a
 								bukuCtl.UpdateCode(newBuku)
@@ -447,7 +477,7 @@ func main() {
 						fmt.Print("Masukan Deskripsi buku : ")
 						scanner.Scan()
 						newBuku.Deskripsi = scanner.Text()
-
+						clearBoard()
 						_, err := bukuCtl.Add(newBuku)
 						if err != nil {
 							fmt.Println("some error on register", err.Error())
@@ -471,15 +501,30 @@ func main() {
 			var ulang bool = true
 			var pilih int
 			for ulang {
+				clearBoard()
+				res, err := lendCtrl.GetAll(session)
+				if err != nil {
+					fmt.Println("Some error on get", err.Error())
+
+				}
+				if res != nil {
+					fmt.Printf("Id Buku \t Nama Buku \t Batas Waktu \n")
+					for i := 0; i < len(res); i++ {
+						fmt.Printf("%v \t\t %v \t\t %v \n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu.Format("02-January-2006"))
+					}
+					fmt.Println()
+				}
+				if res == nil {
+					fmt.Println("Anda Tidak Punya Buku")
+				}
 				fmt.Println("Buku yang dipinjam")
-				fmt.Println("1. Melihat buku yang dipinjam")
-				fmt.Println("2. Kembalikan buku yang dipinjam")
-				fmt.Println("3. Kembali")
+				fmt.Println("1. Kembalikan buku yang dipinjam")
+				fmt.Println("2. Kembali")
 				fmt.Print("Pilih menu: ")
 				fmt.Scanln(&pilih)
 
 				switch pilih {
-				case 1: //Lihat buku yang dipinjam
+				case 1:
 					clearBoard()
 					res, err := lendCtrl.GetAll(session)
 					if err != nil {
@@ -487,25 +532,7 @@ func main() {
 
 					}
 					if res != nil {
-						fmt.Printf("Id_buku \t Nama Buku \t Batas Waktu \n")
-						for i := 0; i < len(res); i++ {
-							fmt.Printf("%v \t\t %v \t\t %v \n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu.Format("02-January-2006"))
-						}
-						fmt.Println()
-					}
-					if res == nil {
-						fmt.Println("Anda Tidak Punya Buku")
-					}
-
-				case 2:
-					clearBoard()
-					res, err := lendCtrl.GetAll(session)
-					if err != nil {
-						fmt.Println("Some error on get", err.Error())
-
-					}
-					if res != nil {
-						fmt.Printf("Id_buku \t Nama Buku \t Batas Waktu \n")
+						fmt.Printf("Id Buku \t Nama Buku \t Batas Waktu \n")
 						for i := 0; i < len(res); i++ {
 							fmt.Printf("%v \t\t %v \t\t %v \n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu.Format("02-January-2006"))
 						}
@@ -527,7 +554,7 @@ func main() {
 						continue
 					}
 
-				case 3:
+				case 2:
 					ulang = false
 					clearBoard()
 				}

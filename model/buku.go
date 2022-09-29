@@ -44,7 +44,7 @@ func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) { //cari buku saya
 
 func (mm BukuModel) CariBuku(namaBuku string) ([]Buku, error) { //cari buku
 	var res []Buku
-	err := mm.DB.Where("nama_buku LIKE ?", namaBuku).Find(&res).Error
+	err := mm.DB.Where("nama_buku LIKE ? || pengarang LIKE ? || deskripsi LIKE ?", namaBuku, namaBuku, namaBuku).Find(&res).Error
 	if err != nil {
 		fmt.Println("error on query", err.Error())
 		return nil, err
