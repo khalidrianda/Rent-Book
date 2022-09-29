@@ -32,7 +32,7 @@ func (mm BukuModel) GetAll(session uint) ([]Buku, error) {
 	return res, nil
 }
 
-func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) {
+func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) { //cari buku saya
 	var res []Buku
 	err := mm.DB.Where("id_user = ?", id).Find(&res).Error
 	if err != nil {
@@ -42,7 +42,17 @@ func (mm BukuModel) GetMyBook(id uint) ([]Buku, error) {
 	return res, nil
 }
 
-func (mm BukuModel) GetName(id uint) (Buku, error) {
+func (mm BukuModel) CariBuku(namaBuku string) ([]Buku, error) { //cari buku
+	var res []Buku
+	err := mm.DB.Where("nama_buku LIKE ?", namaBuku).Find(&res).Error
+	if err != nil {
+		fmt.Println("error on query", err.Error())
+		return nil, err
+	}
+	return res, nil
+}
+
+func (mm BukuModel) GetName(id uint) (Buku, error) { //cari nama buku
 	var res Buku
 	err := mm.DB.Select("nama_buku").Where("id_buku = ?", id).Find(&res).Error
 	if err != nil {
