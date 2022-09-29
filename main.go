@@ -200,14 +200,31 @@ func main() {
 					}
 
 				case 2: // Non Aktifkan Profil
-					var stats model.User
-					var choice string
-					stats.Status_boolean = false
-					stats.Id_user = session
-					fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N) ")
-					fmt.Scanln(&choice)
-					if choice == "Y" {
-						UserCtl.UpdateStatus(stats)
+					res, ser := lendCtrl.CariPinjamUser(session)
+					if res > 0 {
+						fmt.Println("Anda masih mempunyai pinjaman buku")
+					} else if ser > 0 {
+						fmt.Println("Anda masih ada buku yang dipinjamkan")
+						var stats model.User
+						var choice string
+						stats.Status_boolean = false
+						stats.Id_user = session
+						fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
+						fmt.Scanln(&choice)
+						if choice == "Y" {
+							bukuCtl.DeleteBukuUser(session)
+							UserCtl.UpdateStatus(stats)
+						}
+					} else {
+						var stats model.User
+						var choice string
+						stats.Status_boolean = false
+						stats.Id_user = session
+						fmt.Print("Apakah anda yakin ingin menonaktifkan akun? (Y/N)")
+						fmt.Scanln(&choice)
+						if choice == "Y" {
+							UserCtl.UpdateStatus(stats)
+						}
 					}
 
 				case 3:
@@ -236,6 +253,22 @@ func main() {
 				fmt.Println("3. Kembali")
 				fmt.Print("Masukan input : ")
 				fmt.Scanln(&input)
+				var pinjamBuku model.LendBook
+				var tempBuku model.Buku
+				pinjamBuku.Id_buku = uint(input)
+				pinjamBuku.Id_peminjam = session
+				temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
+				pinjamBuku.Nama_buku = temp.Nama_buku
+				pinjamBuku.Id_Pemilik = temp.Id_user
+				inOneMonth := time.Now().AddDate(0, 1, 0)
+				pinjamBuku.Batas_waktu = inOneMonth
+				lendCtrl.Add(pinjamBuku)
+				tempBuku.Id_buku = input
+				tempBuku.Is_lend = true
+				bukuCtl.Dipinjam(tempBuku)
+			} else {
+				continue
+
 				switch input {
 				case 1:
 					if session == 0 {
@@ -458,6 +491,10 @@ func main() {
 							fmt.Printf("%v \t\t %v \t\t %v \n", res[i].Id_buku, res[i].Nama_buku, res[i].Batas_waktu.Format("02-January-2006"))
 						}
 					}
+					if res == nil {
+						fmt.Println("Anda Tidak Punya Buku")
+					}
+
 				case 2:
 					res, err := lendCtrl.GetAll(session)
 					if err != nil {
