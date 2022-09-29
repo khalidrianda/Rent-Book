@@ -256,26 +256,28 @@ func main() {
 
 				switch input {
 				case 1:
+
 					if session == 0 {
 						fmt.Println("Anda haru login untuk meminjam buku")
 						continue
-					} else if inputString == "Y" {
-						fmt.Print("Masukkan ID Buku yang ingin dipinjam : ")
-						fmt.Scanln(&input1)
-						var pinjamBuku model.LendBook
-						var tempBuku model.Buku
-						pinjamBuku.Id_buku = uint(input)
-						pinjamBuku.Id_peminjam = session
-						temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
-						pinjamBuku.Nama_buku = temp.Nama_buku
-						pinjamBuku.Id_Pemilik = temp.Id_user
-						inOneMonth := time.Now().AddDate(0, 1, 0)
-						pinjamBuku.Batas_waktu = inOneMonth
-						lendCtrl.Add(pinjamBuku)
-						tempBuku.Id_buku = input
-						tempBuku.Is_lend = true
-						bukuCtl.Dipinjam(tempBuku)
 					}
+
+					fmt.Print("Masukkan ID Buku yang ingin dipinjam : ")
+					fmt.Scanln(&input1)
+					var pinjamBuku model.LendBook
+					var tempBuku model.Buku
+					pinjamBuku.Id_buku = uint(input)
+					pinjamBuku.Id_peminjam = session
+					temp, _ := bukuCtl.GetName(pinjamBuku.Id_buku)
+					pinjamBuku.Nama_buku = temp.Nama_buku
+					pinjamBuku.Id_Pemilik = temp.Id_user
+					inOneMonth := time.Now().AddDate(0, 1, 0)
+					pinjamBuku.Batas_waktu = inOneMonth
+					lendCtrl.Add(pinjamBuku)
+					tempBuku.Id_buku = input
+					tempBuku.Is_lend = true
+					bukuCtl.Dipinjam(tempBuku)
+
 				case 2:
 					fmt.Print("Masukkan Nama Buku : ")
 					fmt.Scanln(&inputString)
